@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('activity_id')->nullable()->constrained('activities');
+            $table->foreignId('campaign_id')->nullable()->constrained('campaigns');
+            $table->foreignId('step_id')->nullable()->constrained('steps');
             $table->string('username')->unique();
             $table->string('email')->unique();
             $table->string('password');

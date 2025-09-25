@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('campaigns', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('theme_id')->constrained('themes');
             $table->string('name');
             $table->string('description')->nullable();
             $table->timestamps();

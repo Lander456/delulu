@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\AreaOfInterest;
+use App\Models\Theme;
+use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -13,6 +15,20 @@ class AreasOfInterestSeeder extends Seeder
      */
     public function run(): void
     {
-        AreaOfInterest::factory()->count(5)->create();
+
+        $userIDs = User::all()->pluck('id');
+        $themeIDs = Theme::all()->pluck('id');
+
+        AreaOfInterest::factory()
+            ->count(5)
+            ->create()
+            ->each(function (AreaOfInterest $areaOfInterest) use ($userIDs, $themeIDs) {
+                $areaOfInterest->interestedUsers()->attach(
+                    $userIDs->random(rand(0, 5))->toArray()
+                );
+                $areaOfInterest->addressesThemes()->attach(
+                    $themeIDs->random(rand(0, 5))->toArray()
+                );
+            });
     }
 }

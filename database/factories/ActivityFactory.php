@@ -17,9 +17,9 @@ class ActivityFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->unique()->word(),
+            'name' => fake()->unique()->lexify('Activity ???????????'),
             'description' => fake()->text(),
-            'success' => fake()->numberBetween(0, 1),
+            'success' => fake()->randomFloat(3, 0, 1)
         ];
     }
 }

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('AOI_target_demographic', function (Blueprint $table) {
             $table->foreignId('target_demographic_id')->constrained('target_demographics')->cascadeOnDelete();
-            $table->foreignId('areas_of_interest_id')->constrained('area_of_interests')->cascadeOnDelete();
+            $table->foreignId('area_of_interest_id')->constrained('area_of_interests')->cascadeOnDelete();
         });
     }
 

@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('activities', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('step_id')->constrained('steps');
             $table->string('name')->unique();
             $table->string('description')->nullable();
-            $table->integer('success')->default(0);
+            $table->float('success')->default(0);
             $table->timestamps();
         });
     }
