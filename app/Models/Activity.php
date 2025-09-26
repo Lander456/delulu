@@ -17,7 +17,7 @@ class Activity extends Model
         'description',
         'success'
     ];
-    public function assignedWorkers(): BelongsToMany
+    public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'activity_user');
     }

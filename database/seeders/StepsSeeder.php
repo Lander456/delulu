@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Activity;
 use App\Models\Campaign;
 use App\Models\Step;
+use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -16,10 +17,15 @@ class StepsSeeder extends Seeder
     public function run(): void
     {
 
-        Campaign::all()->each(function ($campaign) {
-            Step::factory()
-                ->count(5)
-                ->create(['campaign_id' => $campaign->id]);
-        });
+        $campaignIDs = Campaign::all()->pluck('id');
+        $userIDs = User::all()->pluck('id');
+
+        foreach ($campaignIDs as $campaignID) {
+            Step::factory(rand(1, 5))
+                ->create([
+                    'campaign_id' => $campaignID,
+                    'user_id' => $userIDs->random()
+                ]);
+        }
     }
 }

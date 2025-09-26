@@ -3,16 +3,18 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -53,13 +55,13 @@ class User extends Authenticatable
         return $this->belongsToMany(AreaOfInterest::class, 'area_of_interest_user');
     }
 
-    public function targetDemos(): BelongsToMany
+    public function targetDemographics(): BelongsToMany
     {
         return $this->belongsToMany(TargetDemographic::class, 'area_of_interest_target_demographic');
     }
 
-    public function assignedRoles(): BelongsToMany
+    public function activities(): BelongsToMany
     {
-        return $this->belongsToMany(Role::class);
+        return $this->belongsToMany(Activity::class);
     }
 }

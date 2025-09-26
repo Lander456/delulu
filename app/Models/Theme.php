@@ -23,12 +23,12 @@ class Theme extends Model
         return $this->belongsToMany(AreaOfInterest::class, 'area_of_interest_theme');
     }
 
-    public function target_demographics(): BelongsToMany
+    public function targetDemographics(): BelongsToMany
     {
         return $this->belongsToMany(TargetDemographic::class, 'target_demographic_theme');
     }
 
-    public function infoSources(): BelongsToMany
+    public function informationSources(): BelongsToMany
     {
         return $this->belongsToMany(InformationSource::class, 'information_source_theme');
     }

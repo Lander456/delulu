@@ -13,6 +13,7 @@ class ThemesSeeder extends Seeder
      */
     public function run(): void
     {
-        Theme::factory()->count(5)->create();
+        Theme::factory(5)
+            ->create();
     }
 }

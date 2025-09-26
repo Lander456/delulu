@@ -18,11 +18,11 @@ class Step extends Model
         'name',
         'description',
     ];
-    public function utilizedBy(): BelongsToMany
+    public function steps(): BelongsToMany
     {
         return $this->belongsToMany(Campaign::class, 'campaign_step');
     }
-    public function coordinator(): BelongsTo
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }

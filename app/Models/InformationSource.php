@@ -23,7 +23,7 @@ class InformationSource extends Model
         return $this->belongsToMany(TargetDemographic::class, 'IS_target_demographic');
     }
 
-    public function utilizedBy(): BelongsToMany
+    public function themes(): BelongsToMany
     {
         return $this->belongsToMany(Theme::class, 'information_source_theme');
     }

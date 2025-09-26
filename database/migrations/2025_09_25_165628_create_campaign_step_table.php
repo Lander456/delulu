@@ -12,8 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('campaign_step', function (Blueprint $table) {
-            $table->foreignId('campaign_id')->constrained('campaigns')->cascadeOnDelete();
-            $table->foreignId('step_id')->constrained('steps')->cascadeOnDelete();
+            $table->foreignId('campaign_id')->constrained('campaigns')
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
+            $table->foreignId('step_id')
+                ->constrained('steps')
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
         });
     }
 

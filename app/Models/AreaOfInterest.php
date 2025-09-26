@@ -18,15 +18,15 @@ class AreaOfInterest extends Model
         'description',
         'relevance',
     ];
-    public function interestedUsers(): BelongsToMany
+    public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'area_of_interest_user');
     }
-    public function interestedGroups(): BelongsToMany
+    public function targetDemographics(): BelongsToMany
     {
         return $this->belongsToMany(TargetDemographic::class, 'AOI_target_demographic');
     }
-    public function addressesThemes(): BelongsToMany
+    public function themes(): BelongsToMany
     {
         return $this->belongsToMany(Theme::class, 'area_of_interest_theme');
     }

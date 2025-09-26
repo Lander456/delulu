@@ -14,8 +14,10 @@ return new class extends Migration
         Schema::create('area_of_interests', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('description')->nullable();
-            $table->string('relevance')->nullable();
+            $table->string('description')
+                ->nullable();
+            $table->string('relevance')
+                ->nullable();
             $table->timestamps();
         });
     }

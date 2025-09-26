@@ -12,8 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('AOI_target_demographic', function (Blueprint $table) {
-            $table->foreignId('target_demographic_id')->constrained('target_demographics')->cascadeOnDelete();
-            $table->foreignId('area_of_interest_id')->constrained('area_of_interests')->cascadeOnDelete();
+            $table->foreignId('target_demographic_id')
+                ->constrained('target_demographics')
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
+            $table->foreignId('area_of_interest_id')
+                ->constrained('area_of_interests')
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
         });
     }
 

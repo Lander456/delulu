@@ -12,8 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('information_source_theme', function (Blueprint $table) {
-            $table->foreignId('information_source_id')->constrained('information_sources')->cascadeOnDelete();
-            $table->foreignId('theme_id')->constrained('themes')->cascadeOnDelete();
+            $table->foreignId('information_source_id')
+                ->constrained('information_sources')
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
+            $table->foreignId('theme_id')
+                ->constrained('themes')
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
         });
     }
 

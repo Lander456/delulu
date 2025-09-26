@@ -19,15 +19,14 @@ class AreasOfInterestSeeder extends Seeder
         $userIDs = User::all()->pluck('id');
         $themeIDs = Theme::all()->pluck('id');
 
-        AreaOfInterest::factory()
-            ->count(5)
+        AreaOfInterest::factory(5)
             ->create()
             ->each(function (AreaOfInterest $areaOfInterest) use ($userIDs, $themeIDs) {
-                $areaOfInterest->interestedUsers()->attach(
+                $areaOfInterest->users()->attach(
                     $userIDs->random(rand(0, 5))->toArray()
                 );
-                $areaOfInterest->addressesThemes()->attach(
-                    $themeIDs->random(rand(0, 5))->toArray()
+                $areaOfInterest->themes()->attach(
+                    $themeIDs->random(rand(1, 5))->toArray()
                 );
             });
     }

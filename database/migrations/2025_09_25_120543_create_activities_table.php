@@ -13,10 +13,16 @@ return new class extends Migration
     {
         Schema::create('activities', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('step_id')->constrained('steps');
-            $table->string('name')->unique();
-            $table->string('description')->nullable();
-            $table->float('success')->default(0);
+            $table->foreignId('step_id')
+                ->constrained('steps')
+                ->cascadeOnUpdate()
+                ->cascadeOnDelete();
+            $table->string('name')
+                ->unique();
+            $table->string('description')
+                ->nullable();
+            $table->float('success')
+                ->default(0);
             $table->timestamps();
         });
     }

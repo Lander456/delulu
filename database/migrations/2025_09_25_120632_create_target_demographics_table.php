@@ -14,10 +14,14 @@ return new class extends Migration
         Schema::create('target_demographics', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('description')->nullable();
-            $table->integer('amount')->default(0);
-            $table->string('ethics')->nullable();
-            $table->integer('relevance')->default(0);
+            $table->string('description')
+                ->nullable();
+            $table->integer('amount')
+                ->default(0);
+            $table->string('ethics')
+                ->nullable();
+            $table->integer('relevance')
+                ->default(0);
             $table->timestamps();
         });
     }

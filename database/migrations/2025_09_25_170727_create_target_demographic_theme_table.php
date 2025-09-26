@@ -12,8 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('target_demographic_theme', function (Blueprint $table) {
-            $table->foreignId('target_demographic_id')->constrained('target_demographics')->cascadeOnDelete();
-            $table->foreignId('theme_id')->constrained('themes')->cascadeOnDelete();
+            $table->foreignId('target_demographic_id')
+                ->constrained('target_demographics')
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
+            $table->foreignId('theme_id')
+                ->constrained('themes')
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
         });
     }
 

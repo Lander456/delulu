@@ -21,15 +21,15 @@ class TargetDemographic extends Model
         'ethics',
         'relevance',
     ];
-    public function targetedByUsers(): BelongsToMany
+    public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'target_demographic_user');
     }
-    public function interests(): BelongsToMany
+    public function areasOfInterest(): BelongsToMany
     {
         return $this->belongsToMany(AreaOfInterest::class, 'AOI_target_demographic');
     }
-    public function targetedByThemes(): BelongsToMany
+    public function themes(): BelongsToMany
     {
         return $this->belongsToMany(Theme::class, 'target_demographic_theme');
     }

@@ -17,12 +17,11 @@ class InformationSourcesSeeder extends Seeder
 
         $themeIDs = Theme::all()->pluck('id');
 
-        InformationSource::factory()
-            ->count(5)
+        InformationSource::factory(5)
             ->create()
             ->each(function ($informationSource) use ($themeIDs) {
-                $informationSource->utilizedBy()->attach(
-                    $themeIDs->random(rand(0, 5))->toArray()
+                $informationSource->themes()->attach(
+                    $themeIDs->random(rand(1, 5))->toArray()
                 );
             });
     }

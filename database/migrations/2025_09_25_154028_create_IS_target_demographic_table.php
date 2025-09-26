@@ -12,8 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('IS_target_demographic', function (Blueprint $table) {
-            $table->foreignId('information_source_id')->constrained('information_sources')->cascadeOnDelete();
-            $table->foreignId('target_demographic_id')->constrained('target_demographics')->cascadeOnDelete();
+            $table->foreignId('information_source_id')
+                ->constrained('information_sources')
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
+            $table->foreignId('target_demographic_id')
+                ->constrained('target_demographics')
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
         });
     }
 

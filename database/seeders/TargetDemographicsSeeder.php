@@ -23,20 +23,19 @@ class TargetDemographicsSeeder extends Seeder
         $informationSourceIDs = InformationSource::all()->pluck('id');
         $userIDs = User::all()->pluck('id');
 
-        TargetDemographic::factory()
-            ->count(5)
+        TargetDemographic::factory(5)
             ->create()
             ->each(function (TargetDemographic $targetDemographic) use ($areaOfInterestIDs, $themeIDs, $informationSourceIDs, $userIDs) {
-                $targetDemographic->interests()->attach(
+                $targetDemographic->areasOfInterest()->attach(
                     $areaOfInterestIDs->random(rand(0, 5))->toArray()
                 );
-                $targetDemographic->targetedByThemes()->attach(
-                    $themeIDs->random(rand(0, 5))->toArray()
+                $targetDemographic->themes()->attach(
+                    $themeIDs->random(rand(1, 5))->toArray()
                 );
                 $targetDemographic->informationSources()->attach(
                     $informationSourceIDs->random(rand(0, 5))->toArray()
                 );
-                $targetDemographic->targetedByUsers()->attach(
+                $targetDemographic->users()->attach(
                     $userIDs->random(rand(0, 5))->toArray()
                 );
             });

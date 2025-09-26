@@ -13,9 +13,17 @@ return new class extends Migration
     {
         Schema::create('steps', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('campaign_id')->constrained('campaigns');
+            $table->foreignId('campaign_id')
+                ->constrained('campaigns')
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
+            $table->foreignId('user_id')
+                ->constrained('users')
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
             $table->string('name');
-            $table->string('description')->nullable();
+            $table->string('description')
+                ->nullable();
             $table->timestamps();
         });
     }
