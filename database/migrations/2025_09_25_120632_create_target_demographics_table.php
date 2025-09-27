@@ -18,6 +18,8 @@ return new class extends Migration
                 ->nullable();
             $table->integer('amount')
                 ->default(0);
+            $table->integer('difficulty')
+                ->default(0);
             $table->string('ethics')
                 ->nullable();
             $table->integer('relevance')

@@ -17,6 +17,8 @@ class Step extends Model
     protected $fillable = [
         'name',
         'description',
+        'campaign_id',
+        'user_id'
     ];
     public function steps(): BelongsToMany
     {
@@ -29,5 +31,10 @@ class Step extends Model
     public function activities(): HasMany
     {
         return $this->hasMany(Activity::class);
+    }
+
+    public function campaign(): BelongsTo
+    {
+        return $this->belongsTo(Campaign::class);
     }
 }

@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('description')
                 ->nullable();
             $table->float('success')
-                ->default(0);
+                ->nullable();
             $table->timestamps();
         });
     }
