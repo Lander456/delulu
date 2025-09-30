@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\RolesEnum;
 use App\Models\Campaign;
 use App\Models\Theme;
 use App\Models\User;
@@ -17,10 +18,10 @@ class CampaignsSeeder extends Seeder
     {
 
         $themes = Theme::all();
-        $users = User::all();
+        $users = User::role(RolesEnum::CAMPAIGN_LEADER->value)->get();
 
         foreach ($themes as $theme) {
-            Campaign::factory(rand(1, 5))->create([
+            Campaign::factory(rand(1, 4))->create([
                 'theme_id' => $theme->id,
                 'user_id' => $users->random()->id
             ]);

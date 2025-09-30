@@ -21,7 +21,7 @@ class InformationSourcesSeeder extends Seeder
             ->create()
             ->each(function ($informationSource) use ($themeIDs) {
                 $informationSource->themes()->attach(
-                    $themeIDs->random(rand(1, 5))->toArray()
+                    $themeIDs->random(rand(1, 4))->toArray()
                 );
             });
     }

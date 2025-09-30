@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\RolesEnum;
 use App\Models\Activity;
 use App\Models\Campaign;
 use App\Models\Step;
@@ -17,14 +18,14 @@ class StepsSeeder extends Seeder
     public function run(): void
     {
 
-        $campaignIDs = Campaign::all()->pluck('id');
-        $userIDs = User::all()->pluck('id');
+        $campaigns = Campaign::all();
+        $users = User::role(RolesEnum::COORDINATOR->value)->get();
 
-        foreach ($campaignIDs as $campaignID) {
-            Step::factory(rand(1, 5))
+        foreach ($campaigns as $campaign) {
+            Step::factory(rand(1, 4))
                 ->create([
-                    'campaign_id' => $campaignID,
-                    'user_id' => $userIDs->random()
+                    'campaign_id' => $campaign->id,
+                    'user_id' => $users->random()->id
                 ]);
         }
     }

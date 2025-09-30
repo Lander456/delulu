@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Activity extends Model
 {
@@ -21,8 +21,8 @@ class Activity extends Model
     {
         return $this->belongsToMany(User::class, 'activity_user');
     }
-    public function steps(): BelongsToMany
+    public function step(): BelongsTo
     {
-        return $this->belongsToMany(Step::class, 'activity_step');
+        return $this->belongsTo(Step::class);
     }
 }

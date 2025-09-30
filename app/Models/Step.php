@@ -20,7 +20,7 @@ class Step extends Model
         'campaign_id',
         'user_id'
     ];
-    public function steps(): BelongsToMany
+    public function campaigns(): BelongsToMany
     {
         return $this->belongsToMany(Campaign::class, 'campaign_step');
     }

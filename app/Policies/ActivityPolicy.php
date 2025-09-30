@@ -4,10 +4,9 @@ namespace App\Policies;
 
 use App\Enums\PermissionsEnum;
 use App\Models\Activity;
+use App\Models\Campaign;
 use App\Models\Step;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
-use App\Enums\RolesEnum;
 
 class ActivityPolicy
 {
@@ -40,9 +39,13 @@ class ActivityPolicy
      */
     public function update(User $user, Activity $activity): bool
     {
-        $parentStepsIDs = $activity->steps()->pluck('id')->toArray();
+        $parentStep = $activity->step;
+        $parentCampaign = $parentStep->campaign;
+        $parentTheme = $parentCampaign->theme;
 
-        return $user->steps()->whereIn('step_id', $parentStepsIDs)->exists();
+        return $parentStep->user->id == $user->id or
+            $parentCampaign->user->id == $user->id or
+            $parentTheme->user->id == $user->id;
     }
 
     /**
@@ -50,9 +53,13 @@ class ActivityPolicy
      */
     public function delete(User $user, Activity $activity): bool
     {
-        $parentStepsIDs = $activity->steps()->pluck('id')->toArray();
+        $parentStep = $activity->step;
+        $parentCampaign = $parentStep->campaign;
+        $parentTheme = $parentCampaign->theme;
 
-        return $user->steps()->whereIn('step_id', $parentStepsIDs)->exists();
+        return $parentStep->user->id == $user->id or
+            $parentCampaign->user->id == $user->id or
+            $parentTheme->user->id == $user->id;
     }
 
     /**

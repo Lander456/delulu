@@ -18,10 +18,12 @@ class UsersSeeder extends Seeder
     {
 
         foreach (Role::all() as $role) {
-            $user = User::factory()
+            $users = User::factory(rand(1, 5))
                 ->create();
 
-            $user->assignRole($role->name);
+            foreach ($users as $user) {
+                $user->assignRole($role->name);
+            }
         }
     }
 }

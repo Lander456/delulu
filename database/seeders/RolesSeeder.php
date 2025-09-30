@@ -27,7 +27,7 @@ class RolesSeeder extends Seeder
                     $createdRole->givePermissionTo(PermissionsEnum::getUsersPerms());
                     $createdRole->givePermissionTo(PermissionsEnum::getAreasOfInterestPerms());
                     $createdRole->givePermissionTo(PermissionsEnum::getDemographicPerms());
-
+                    $createdRole->givePermissionTo(PermissionsEnum::getActivitiesPerms());
                     $createdRole->givePermissionTo([
                         PermissionsEnum::ASSIGN_LEADERS->value,
                         ]);
@@ -36,9 +36,10 @@ class RolesSeeder extends Seeder
 
                     $createdRole->givePermissionTo(PermissionsEnum::getCampaignsPerms());
                     $createdRole->givePermissionTo(PermissionsEnum::getStepsPerms());
+                    $createdRole->givePermissionTo(PermissionsEnum::getActivitiesPerms());
                     $createdRole->givePermissionTo([
                         PermissionsEnum::ASSIGN_COORDINATORS->value,
-                    ]);
+                        ]);
                     break;
                 case RolesEnum::COORDINATOR->value:
 
@@ -50,6 +51,8 @@ class RolesSeeder extends Seeder
                     ]);
                     break;
 
+                case RolesEnum::WORKER->value:
+                    $createdRole->givePermissionTo(PermissionsEnum::VIEW_ACTIVITIES);
                 default:
                     break;
 

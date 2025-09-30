@@ -30,7 +30,7 @@ class TargetDemographicsSeeder extends Seeder
                     $areaOfInterestIDs->random(rand(0, 5))->toArray()
                 );
                 $targetDemographic->themes()->attach(
-                    $themeIDs->random(rand(1, 5))->toArray()
+                    $themeIDs->random(rand(1, 4))->toArray()
                 );
                 $targetDemographic->informationSources()->attach(
                     $informationSourceIDs->random(rand(0, 5))->toArray()
