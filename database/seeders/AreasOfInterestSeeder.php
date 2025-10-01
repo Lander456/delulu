@@ -26,7 +26,7 @@ class AreasOfInterestSeeder extends Seeder
                     $userIDs->random(rand(0, 5))->toArray()
                 );
                 $areaOfInterest->themes()->attach(
-                    $themeIDs->random(rand(1, 4))->toArray()
+                    $themeIDs->random()
                 );
             });
     }

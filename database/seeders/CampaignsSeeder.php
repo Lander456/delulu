@@ -21,10 +21,12 @@ class CampaignsSeeder extends Seeder
         $users = User::role(RolesEnum::CAMPAIGN_LEADER->value)->get();
 
         foreach ($themes as $theme) {
-            Campaign::factory(rand(1, 4))->create([
-                'theme_id' => $theme->id,
-                'user_id' => $users->random()->id
-            ]);
+            foreach ($users as $user) {
+                Campaign::factory(rand(1, 4))->create([
+                    'theme_id' => $theme->id,
+                    'user_id' => $user->id
+                ]);
+            }
         }
     }
 }

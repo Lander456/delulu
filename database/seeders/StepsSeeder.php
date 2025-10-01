@@ -22,11 +22,13 @@ class StepsSeeder extends Seeder
         $users = User::role(RolesEnum::COORDINATOR->value)->get();
 
         foreach ($campaigns as $campaign) {
-            Step::factory(rand(1, 4))
-                ->create([
-                    'campaign_id' => $campaign->id,
-                    'user_id' => $users->random()->id
-                ]);
+            foreach ($users as $user) {
+                Step::factory(rand(1, 4))
+                    ->create([
+                        'campaign_id' => $campaign->id,
+                        'user_id' => $user->id
+                    ]);
+            }
         }
     }
 }

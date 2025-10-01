@@ -18,7 +18,7 @@ class ThemesSeeder extends Seeder
         $users = User::role(RolesEnum::ADMIN->value)->get();
 
         foreach ($users as $user) {
-            Theme::factory(5)
+            Theme::factory()
                 ->create([
                     'user_id' => $user->id,
                 ]);
