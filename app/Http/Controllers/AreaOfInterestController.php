@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\PermissionsEnum;
 use App\Models\AreaOfInterest;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
+use Spatie\Permission\Models\Permission;
 
 class AreaOfInterestController extends Controller
 {
@@ -15,6 +17,8 @@ class AreaOfInterestController extends Controller
      */
     public function index()
     {
+        $this->authorize(PermissionsEnum::VIEW_AREAS_OF_INTEREST->value, AreaOfInterest::class);
+
         return AreaOfInterest::all();
     }
 
@@ -23,7 +27,7 @@ class AreaOfInterestController extends Controller
      */
     public function create()
     {
-        $this->authorize('create', AreaOfInterest::class);
+        $this->authorize(PermissionsEnum::CREATE_AREAS_OF_INTEREST->value, AreaOfInterest::class);
 
         return view('areaofinterest.create');
     }
@@ -33,6 +37,8 @@ class AreaOfInterestController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize(PermissionsEnum::CREATE_AREAS_OF_INTEREST->value, AreaOfInterest::class);
+
         $areaOfInterest = $request->validate([
             'name' => ['required','string'],
             'description' => ['string'],
@@ -49,6 +55,8 @@ class AreaOfInterestController extends Controller
      */
     public function show(AreaOfInterest $areaOfInterest)
     {
+        $this->authorize(PermissionsEnum::VIEW_AREAS_OF_INTEREST->value, AreaOfInterest::class);
+
         return view('areaofinterest.detail', compact('areaOfInterest'));
     }
 
@@ -57,7 +65,7 @@ class AreaOfInterestController extends Controller
      */
     public function edit(AreaOfInterest $areaOfInterest)
     {
-        $this->authorize('update', $areaOfInterest);
+        $this->authorize(PermissionsEnum::EDIT_AREAS_OF_INTEREST, AreaOfInterest::class);
 
         return view('areaofinterest.edit', compact('areaOfInterest'));
     }
@@ -67,7 +75,7 @@ class AreaOfInterestController extends Controller
      */
     public function update(Request $request, AreaOfInterest $areaOfInterest)
     {
-        $this->authorize('update', $areaOfInterest);
+        $this->authorize(PermissionsEnum::EDIT_AREAS_OF_INTEREST, $areaOfInterest);
 
         $validated = $request->validate([
             'name' => ['required','string'],
@@ -85,7 +93,7 @@ class AreaOfInterestController extends Controller
      */
     public function destroy(AreaOfInterest $areaOfInterest)
     {
-        $this->authorize('delete', $areaOfInterest);
+        $this->authorize(PermissionsEnum::DELETE_AREAS_OF_INTEREST, $areaOfInterest);
 
         $areaOfInterest->delete();
 
