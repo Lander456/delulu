@@ -12,13 +12,12 @@ use App\Policies\ActivityPolicy;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class ActivityPolicyTest extends TestCase
+class ActivityPolicyTests extends TestCase
 {
-
     use RefreshDatabase;
 
-    protected User $user;
-    protected ActivityPolicy $policy;
+    private User $user;
+    private ActivityPolicy $policy;
 
     private function setUpRegistered(string $role): void
     {
