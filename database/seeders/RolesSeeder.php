@@ -28,6 +28,7 @@ class RolesSeeder extends Seeder
                     $createdRole->givePermissionTo(PermissionsEnum::getAreasOfInterestPerms());
                     $createdRole->givePermissionTo(PermissionsEnum::getDemographicPerms());
                     $createdRole->givePermissionTo(PermissionsEnum::getActivitiesPerms());
+                    $createdRole->givePermissionTo(PermissionsEnum::getCampaignsPerms());
                     $createdRole->givePermissionTo([
                         PermissionsEnum::ASSIGN_LEADERS->value,
                         ]);
