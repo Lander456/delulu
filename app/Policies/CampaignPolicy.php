@@ -39,7 +39,10 @@ class CampaignPolicy
      */
     public function update(User $user, Campaign $campaign): bool
     {
-        return $user->hasPermissionTo(PermissionsEnum::EDIT_CAMPAIGNS->value);
+        $parentTheme = $campaign->theme;
+
+        return $campaign->user->id == $user->id or
+            $parentTheme->user->id == $user->id;
     }
 
     /**
@@ -47,7 +50,9 @@ class CampaignPolicy
      */
     public function delete(User $user, Campaign $campaign): bool
     {
-        return $user->hasPermissionTo(PermissionsEnum::DELETE_CAMPAIGNS->value);
+        $parentTheme = $campaign->theme;
+        return $campaign->user->id == $user->id or
+            $parentTheme->user->id == $user->id;
     }
 
     /**
