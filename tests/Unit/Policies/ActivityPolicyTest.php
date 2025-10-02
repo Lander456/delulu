@@ -12,14 +12,14 @@ use App\Policies\ActivityPolicy;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class ActivityPolicyTests extends TestCase
+class ActivityPolicyTest extends TestCase
 {
     use RefreshDatabase;
 
     private User $user;
     private ActivityPolicy $policy;
 
-    private function setUpRegistered(string $role): void
+    private function setUpRegistered(string $role, ): void
     {
         $this->user = User::role($role)->inRandomOrder()->first();
         $this->policy = new ActivityPolicy();
