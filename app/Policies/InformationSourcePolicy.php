@@ -32,23 +32,23 @@ class InformationSourcePolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasRole(RolesEnum::ADMIN->value);
+        return $user->hasPermissionTo(PermissionsEnum::CREATE_INFORMATION_SOURCES->value);
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, InformationSource $informationSource): bool
+    public function update(User $user): bool
     {
-        return $user->hasRole(RolesEnum::ADMIN->value);
+        return $user->hasPermissionTo(PermissionsEnum::EDIT_INFORMATION_SOURCES->value);
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, InformationSource $informationSource): bool
+    public function delete(User $user): bool
     {
-        return $user->hasRole(RolesEnum::ADMIN->value);
+        return $user->hasPermissionTo(PermissionsEnum::DELETE_INFORMATION_SOURCES->value);
     }
 
     /**
