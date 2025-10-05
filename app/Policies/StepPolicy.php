@@ -21,9 +21,20 @@ class StepPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user): bool
+    public function view(User $user, Step $step): bool
     {
-        return $user->hasPermissionTo(PermissionsEnum::VIEW_STEPS->value);
+        if ($step->user->id == $user->id){
+            return true;
+        }
+
+        if ($step->campaign && $step->campaign->user->id == $user->id) {
+            return true;
+        }
+
+        if ($step->campaign->theme && $step->campaign->theme->user->id == $user->id){
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -39,7 +50,19 @@ class StepPolicy
      */
     public function update(User $user, Step $step): bool
     {
-        return $user->getKey() == $step->user()->first()->id;
+        if ($step->user->id == $user->id){
+            return true;
+        }
+
+        if ($step->campaign->user->id == $user->id){
+            return true;
+        }
+
+        if ($step->campaign->theme && $step->campaign->theme->user->id == $user->id){
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -47,7 +70,17 @@ class StepPolicy
      */
     public function delete(User $user, Step $step): bool
     {
-        return $user->getKey() == $step->user()->first()->id;
+        if ($user->hasPermissionTo(PermissionsEnum::DELETE_STEPS->value)) {
+
+            if ($step->campaign->user->id == $user->id) {
+                return true;
+            }
+
+            if ($step->campaign->theme->user->id == $user->id) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
