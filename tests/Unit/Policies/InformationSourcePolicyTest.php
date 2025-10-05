@@ -6,7 +6,7 @@ use App\Enums\RolesEnum;
 use App\Models\User;
 use App\Policies\InformationSourcePolicy;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
 class InformationSourcePolicyTest extends TestCase
 {
