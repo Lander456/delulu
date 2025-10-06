@@ -129,7 +129,7 @@ class ActivityPolicyTest extends TestCase
         $this->assertTrue($this->policy->viewAny($this->user));
     }
 
-    public function test_allow_coordinator_to_update_owned_activity(): void
+    public function test_allow_coordinator_to_update_owned(): void
     {
         $this->setUpRegistered(RolesEnum::COORDINATOR->value);
         $stepId = Step::where('user_id', $this->user->id)->first()->id;
@@ -138,7 +138,7 @@ class ActivityPolicyTest extends TestCase
         $this->assertTrue($this->policy->update($this->user, $activity));
     }
 
-    public function test_block_coordinator_from_updating_unowned_activity(): void
+    public function test_block_coordinator_from_updating_unowned(): void
     {
         $this->setUpRegistered(RolesEnum::COORDINATOR->value);
         $step = Step::where('user_id', '!=', $this->user->id)->first();
@@ -147,7 +147,7 @@ class ActivityPolicyTest extends TestCase
         $this->assertFalse($this->policy->update($this->user, $activity));
     }
 
-    public function test_allow_coordinator_to_delete_owned_activity(): void
+    public function test_allow_coordinator_to_delete_owned(): void
     {
         $this->setUpRegistered(RolesEnum::COORDINATOR->value);
         $stepId = Step::where('user_id', $this->user->id)->first()->id;
@@ -156,7 +156,7 @@ class ActivityPolicyTest extends TestCase
         $this->assertTrue($this->policy->delete($this->user, $activity));
     }
 
-    public function test_block_coordinator_from_deleting_unowned_activity(): void
+    public function test_block_coordinator_from_deleting_unowned(): void
     {
         $this->setUpRegistered(RolesEnum::COORDINATOR->value);
         $step = Step::where('user_id', '!=', $this->user->id)->first();
@@ -179,7 +179,7 @@ class ActivityPolicyTest extends TestCase
         $this->assertTrue($this->policy->viewAny($this->user));
     }
 
-    public function test_allow_campaign_leader_to_update_owned_activity(): void
+    public function test_allow_campaign_leader_to_update_owned(): void
     {
         $this->setUpRegistered(RolesEnum::CAMPAIGN_LEADER->value);
         $campaign = Campaign::where('user_id', $this->user->id)->first();
@@ -189,7 +189,7 @@ class ActivityPolicyTest extends TestCase
         $this->assertTrue($this->policy->update($this->user, $activity));
     }
 
-    public function test_block_campaign_leader_from_updating_unowned_activity(): void
+    public function test_block_campaign_leader_from_updating_unowned(): void
     {
         $this->setUpRegistered(RolesEnum::CAMPAIGN_LEADER->value);
         $campaign = Campaign::where('user_id', '!=' ,$this->user->id)->first();
@@ -199,7 +199,7 @@ class ActivityPolicyTest extends TestCase
         $this->assertFalse($this->policy->update($this->user, $activity));
     }
 
-    public function test_allow_campaign_leader_to_delete_owned_activity(): void
+    public function test_allow_campaign_leader_to_delete_owned(): void
     {
         $this->setUpRegistered(RolesEnum::CAMPAIGN_LEADER->value);
         $campaign = Campaign::where('user_id', $this->user->id)->first();
@@ -209,7 +209,7 @@ class ActivityPolicyTest extends TestCase
         $this->assertTrue($this->policy->delete($this->user, $activity));
     }
 
-    public function test_block_campaign_leader_from_deleting_unowned_activity(): void
+    public function test_block_campaign_leader_from_deleting_unowned(): void
     {
         $this->setUpRegistered(RolesEnum::CAMPAIGN_LEADER->value);
         $campaign = Campaign::where('user_id', '!=', $this->user->id)->first();
@@ -219,21 +219,21 @@ class ActivityPolicyTest extends TestCase
         $this->assertFalse($this->policy->delete($this->user, $activity));
     }
 
-    public function test_allow_admin_to_view_any_activity(): void
+    public function test_allow_admin_to_view_any(): void
     {
         $this->setUpRegistered(RolesEnum::ADMIN->value);
 
         $this->assertTrue($this->policy->viewAny($this->user));
     }
 
-    public function test_allow_admin_to_create_activity(): void
+    public function test_allow_admin_to_create(): void
     {
         $this->setUpRegistered(RolesEnum::ADMIN->value);
 
         $this->assertTrue($this->policy->create($this->user));
     }
 
-    public function test_allow_admin_to_update_owned_activity(): void
+    public function test_allow_admin_to_update_owned(): void
     {
         $this->setUpRegistered(RolesEnum::ADMIN->value);
         $theme = Theme::where('user_id', $this->user->id)->first();
@@ -244,7 +244,7 @@ class ActivityPolicyTest extends TestCase
         $this->assertTrue($this->policy->update($this->user, $activity));
     }
 
-    public function test_block_admin_from_updating_unowned_activity(): void
+    public function test_block_admin_from_updating_unowned(): void
     {
         $this->setUpRegistered(RolesEnum::ADMIN->value);
         $theme = Theme::where('user_id','!=' , $this->user->id)->first();
@@ -255,7 +255,7 @@ class ActivityPolicyTest extends TestCase
         $this->assertFalse($this->policy->update($this->user, $activity));
     }
 
-    public function test_allow_admin_to_delete_owned_activity(): void
+    public function test_allow_admin_to_delete_owned(): void
     {
         $this->setUpRegistered(RolesEnum::ADMIN->value);
         $theme = Theme::where('user_id', $this->user->id)->first();
@@ -266,7 +266,7 @@ class ActivityPolicyTest extends TestCase
         $this->assertTrue($this->policy->delete($this->user, $activity));
     }
 
-    public function test_block_admin_from_deleting_unowned_activity(): void
+    public function test_block_admin_from_deleting_unowned(): void
     {
         $this->setUpRegistered(RolesEnum::ADMIN->value);
         $theme = Theme::where('user_id','!=' , $this->user->id)->first();
