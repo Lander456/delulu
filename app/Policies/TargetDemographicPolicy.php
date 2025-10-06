@@ -20,7 +20,7 @@ class TargetDemographicPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user): bool
+    public function view(User $user, TargetDemographic $targetDemographic): bool
     {
         return $user->hasPermissionTo(PermissionsEnum::VIEW_DEMOGRAPHICS->value);
     }
