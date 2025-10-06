@@ -20,9 +20,9 @@ class ThemePolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user): bool
+    public function view(User $user, Theme $theme): bool
     {
-        return $user->hasPermissionTo(PermissionsEnum::VIEW_THEMES->value);
+        return $theme->user->id == $user->id;
     }
 
     /**
@@ -38,7 +38,7 @@ class ThemePolicy
      */
     public function update(User $user, Theme $theme): bool
     {
-        return $user->hasPermissionTo(PermissionsEnum::EDIT_THEMES->value);
+        return $theme->user->id == $user->id;
     }
 
     /**
@@ -46,7 +46,7 @@ class ThemePolicy
      */
     public function delete(User $user, Theme $theme): bool
     {
-        return $user->hasPermissionTo(PermissionsEnum::DELETE_THEMES->value);
+        return $theme->user->id == $user->id;
     }
 
     /**
