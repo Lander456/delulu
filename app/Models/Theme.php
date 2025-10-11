@@ -15,7 +15,8 @@ class Theme extends Model
 
     protected $fillable = [
         'name',
-        'description'
+        'description',
+        'user_id'
     ];
 
     public function areasOfInterest(): BelongsToMany

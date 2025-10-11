@@ -19,9 +19,9 @@ class TargetDemographicFactory extends Factory
         return [
             'name' => fake()->words(3, true),
             'description' => fake()->text(),
-            'amount' => fake()->numberBetween(1, 100000),
+            'amount' => fake()->randomFloat(2, 0, 1),
             'ethics' => fake()->words(3, true),
-            'relevance' => fake()->numberBetween(0, 1),
+            'relevance' => fake()->randomFloat(2, 0, 1),
         ];
     }
 }

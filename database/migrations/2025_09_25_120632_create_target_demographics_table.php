@@ -18,11 +18,11 @@ return new class extends Migration
                 ->nullable();
             $table->integer('amount')
                 ->default(0);
-            $table->integer('difficulty')
+            $table->float('difficulty')
                 ->default(0);
             $table->string('ethics')
                 ->nullable();
-            $table->integer('relevance')
+            $table->float('relevance')
                 ->default(0);
             $table->timestamps();
         });

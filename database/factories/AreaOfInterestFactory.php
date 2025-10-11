@@ -19,7 +19,7 @@ class AreaOfInterestFactory extends Factory
         return [
             'name' => fake()->word(),
             'description' => fake()->text(),
-            'relevance' => fake()->text(),
+            'relevance' => fake()->numberBetween(0, 100),
         ];
     }
 }

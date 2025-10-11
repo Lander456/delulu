@@ -20,10 +20,6 @@ class Step extends Model
         'campaign_id',
         'user_id'
     ];
-    public function campaigns(): BelongsToMany
-    {
-        return $this->belongsToMany(Campaign::class, 'campaign_step');
-    }
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -32,7 +28,6 @@ class Step extends Model
     {
         return $this->hasMany(Activity::class);
     }
-
     public function campaign(): BelongsTo
     {
         return $this->belongsTo(Campaign::class);
