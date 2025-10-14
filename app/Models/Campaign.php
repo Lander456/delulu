@@ -30,4 +30,15 @@ class Campaign extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function getSuccessRateAttribute(): float
+    {
+        $successValues = $this->steps->pluck('success_rate');
+
+        if ($successValues->isEmpty()) {
+            return 0;
+        }
+
+        return round($successValues->avg(), 2);
+    }
 }

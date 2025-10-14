@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Activity;
 use App\Models\Theme;
 use App\Models\User;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 
@@ -17,9 +18,13 @@ class ActivityController extends Controller
      */
     public function index()
     {
-        $this->authorize('view', Activity::class);
+        $this->authorize('viewAny', Activity::class);
 
-        return Activity::all();
+        $activities = Activity::with(['step.user'])->get()
+            ->filter(fn ($activity) => Gate::allows('view', $activity))
+            ->values();
+
+        return view('activity.index', compact('activities'));
     }
 
     /**
@@ -39,15 +44,23 @@ class ActivityController extends Controller
     {
         $this->authorize('create', Activity::class);
 
-        $activity = $request->validate([
+        $validated = $request->validate([
             'name' => ['required','string','unique:activities,name'],
-            'description' => ['string'],
-            'step_id' => ['required','exists:steps,id'],
+            'description' => ['nullable','string'],
+            'step' => ['required','integer','exists:steps,id'],
         ]);
 
-        Activity::create($activity);
+        $activity = new Activity([
+            'name' => $validated['name'],
+            'description' => $validated['description'],
+        ]);
 
-        return redirect('/activities')->with('success', 'Activity created!');
+        $activity->step()->associate($validated['step']);
+        $activity->save();
+
+        $users = User::all();
+
+        return view('activity.detail', compact('activity', 'users'))->with('success', 'Activity created!');
     }
 
     /**
@@ -57,7 +70,11 @@ class ActivityController extends Controller
     {
         $this->authorize('view', $activity);
 
-        return view('activity.detail', ['activity' => $activity]);
+        $assignedUserIds = $activity->users->pluck('id');
+
+        $users = User::whereNotIn('id', $assignedUserIds)->get();
+
+        return view('activity.detail', compact('activity', 'users'));
     }
 
     /**
@@ -77,15 +94,42 @@ class ActivityController extends Controller
     {
         $this->authorize('update', $activity);
 
-        $validated = $request->validate([
-            'name' => ['required','string','unique:activities,name'],
-            'description' => ['string'],
-            'step_id' => ['required','exists:steps,id']
-        ]);
+        if ($request->has('users')){
+            $validated = $request->validate([
+                'users' => ['required','array'],
+                'users.*' => ['required','integer','exists:users,id']
+            ]);
 
-        $activity->update($validated);
+            $activity->users()->sync($validated['users']);
+        }
 
-        return redirect('/activities')->with('success', 'Activity updated!');
+        if ($request->has('name')){
+            $validated = $request->validate([
+                'name' => ['required','string','unique:activities,name'],
+            ]);
+
+            $activity->update(['name' => $validated['name']]);
+        }
+
+        if ($request->has('description')){
+            $validated = $request->validate([
+                'description' => ['nullable','string'],
+            ]);
+
+            $activity->update(['description' => $validated['description']]);
+        }
+
+        if ($request->has('step_id')){
+            $validated = $request->validate([
+                'step_id' => ['required','integer','exists:steps,id'],
+            ]);
+
+            $activity->step()->associate($validated['step_id']);
+        }
+
+        $activity->save();
+        $users = User::all();
+        return view('activity.detail', compact('activity', 'users'))->with('success', 'Activity updated!');
     }
 
     /**
@@ -97,6 +141,28 @@ class ActivityController extends Controller
 
         $activity->delete();
 
-        return redirect('/activities')->with('success', 'Activity deleted!');
+        return redirect()->back()->with('success', 'Activity deleted!');
+    }
+
+    public function assignUsers(Request $request, Activity $activity)
+    {
+        $this->authorize('update', $activity);
+
+        $validated = $request->validate([
+            'users' => ['nullable','array'],
+            'users.*' => ['exists:users,id'],
+        ]);
+
+        $activity->users()->sync(array_merge($validated['users'], $activity->users()->pluck('id')->toArray()));
+        $activity->save();
+
+        return redirect()->back()->with('success', 'Users assigned to activity!');
+    }
+
+    public function unassignUser(Activity $activity, User $user)
+    {
+        $activity->users()->detach($user);
+
+        return redirect()->back()->with('success', 'User unassigned from activity!');
     }
 }

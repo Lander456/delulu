@@ -7,6 +7,7 @@ use App\Models\Campaign;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class CampaignController extends Controller
 {
@@ -17,9 +18,13 @@ class CampaignController extends Controller
      */
     public function index()
     {
-        $this->authorize('view', Activity::class);
+        $this->authorize('viewAny', Campaign::class);
 
-        return Campaign::all();
+        $campaigns = Campaign::all()
+            ->filter( fn ($campaign) => Gate::allows('view', $campaign))
+            ->values();
+
+        return view('campaign.index', compact('campaigns'));
     }
 
     /**

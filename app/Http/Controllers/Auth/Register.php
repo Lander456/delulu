@@ -14,11 +14,13 @@ class Register extends Controller
     {
         $validated = $request->validate([
             'username' => 'required|string|max:255|unique:users',
+            'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
         ]);
 
         $user = User::create([
             'username' => $validated['username'],
+            'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
         ]);
 

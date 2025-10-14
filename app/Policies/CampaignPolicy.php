@@ -21,9 +21,10 @@ class CampaignPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user): bool
+    public function view(User $user, Campaign $campaign): bool
     {
-        return $user->hasPermissionTo(PermissionsEnum::VIEW_CAMPAIGNS->value);
+        return $campaign->user->id == $user->id or
+            $campaign->theme->user->id == $user->id;
     }
 
     /**

@@ -77,4 +77,28 @@ class User extends Authenticatable
     {
         return $this->hasMany(Theme::class);
     }
+
+    public function getSteps()
+    {
+        return Step::where('user_id', '=', $this->id)
+            ->orWhereHas('campaign', function ($query) {
+                $query->where('user_id', '=', $this->id)
+                    ->orWhereHas('theme', function ($query) {
+                        $query->where('user_id', '=', $this->id);
+                    });
+            })->get();
+    }
+
+    public function getCampaigns()
+    {
+        return Campaign::where('user_id', '=', $this->id)
+            ->orWhereHas('theme', function ($query) {
+                $query->where('user_id', '=', $this->id);
+            })->get();
+    }
+
+    public function getRoleAttribute()
+    {
+        return $this->getRoleNames()->first();
+    }
 }

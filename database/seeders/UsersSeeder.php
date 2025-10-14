@@ -19,7 +19,9 @@ class UsersSeeder extends Seeder
 
         foreach (Role::all() as $role) {
             $users = User::factory(5)
-                ->create();
+                ->create(
+                    ['password' => 'secretpass']
+                );
 
             foreach ($users as $user) {
                 $user->assignRole($role->name);

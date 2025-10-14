@@ -32,4 +32,15 @@ class Step extends Model
     {
         return $this->belongsTo(Campaign::class);
     }
+
+    public function getSuccessRateAttribute(): float
+    {
+        $successValues = $this->activities->pluck('success')->filter();
+
+        if ($successValues->isEmpty()) {
+            return 0;
+        }
+
+        return round($successValues->avg(), 2);
+    }
 }

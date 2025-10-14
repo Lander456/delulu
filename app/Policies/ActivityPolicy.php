@@ -4,8 +4,6 @@ namespace App\Policies;
 
 use App\Enums\PermissionsEnum;
 use App\Models\Activity;
-use App\Models\Campaign;
-use App\Models\Step;
 use App\Models\User;
 
 class ActivityPolicy
@@ -21,9 +19,15 @@ class ActivityPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user): bool
+    public function view(User $user, Activity $activity): bool
     {
-        return $user->hasPermissionTo(PermissionsEnum::VIEW_ACTIVITIES->value);
+        if ($activity->users->contains($user)) {
+            return true;
+        }
+
+        return $user->id == $activity->step->user_id ||
+            $user->id == $activity->step->campaign->user_id ||
+            $user->id == $activity->step->campaign->theme->user_id;
     }
 
     /**
@@ -40,12 +44,8 @@ class ActivityPolicy
     public function update(User $user, Activity $activity): bool
     {
         $parentStep = $activity->step;
-        $parentCampaign = $parentStep->campaign;
-        $parentTheme = $parentCampaign->theme;
 
-        return $parentStep->user->id == $user->id or
-            $parentCampaign->user->id == $user->id or
-            $parentTheme->user->id == $user->id;
+        return $parentStep->user->id == $user->id;
     }
 
     /**
@@ -53,13 +53,7 @@ class ActivityPolicy
      */
     public function delete(User $user, Activity $activity): bool
     {
-        $parentStep = $activity->step;
-        $parentCampaign = $parentStep->campaign;
-        $parentTheme = $parentCampaign->theme;
-
-        return $parentStep->user->id == $user->id or
-            $parentCampaign->user->id == $user->id or
-            $parentTheme->user->id == $user->id;
+        return $activity->step->user->id == $user->id;
     }
 
     /**
@@ -76,5 +70,10 @@ class ActivityPolicy
     public function forceDelete(User $user, Activity $activity): bool
     {
         return false;
+    }
+
+    public function administer(User $user): bool
+    {
+        return $user->hasPermissionTo(PermissionsEnum::EDIT_ACTIVITIES->value);
     }
 }

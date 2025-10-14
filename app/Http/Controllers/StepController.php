@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Step;
+use App\Models\User;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class StepController extends Controller
 {
@@ -15,9 +17,14 @@ class StepController extends Controller
      */
     public function index()
     {
-        $this->authorize('view', Step::class);
+        $this->authorize('viewAny', Step::class);
 
-        return Step::all();
+        $steps = Step::with('activities', 'user')
+            ->get()
+            ->filter(fn ($step) => Gate::allows('view', $step))
+            ->values();
+
+        return view('step.index', compact('steps'));
     }
 
     /**

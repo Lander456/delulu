@@ -23,18 +23,9 @@ class StepPolicy
      */
     public function view(User $user, Step $step): bool
     {
-        if ($step->user->id == $user->id){
-            return true;
-        }
-
-        if ($step->campaign && $step->campaign->user->id == $user->id) {
-            return true;
-        }
-
-        if ($step->campaign->theme && $step->campaign->theme->user->id == $user->id){
-            return true;
-        }
-        return false;
+        return $step->user->id == $user->id or
+            $step->campaign->user->id == $user->id or
+            $step->campaign->theme->user->id == $user->id;
     }
 
     /**
@@ -50,19 +41,9 @@ class StepPolicy
      */
     public function update(User $user, Step $step): bool
     {
-        if ($step->user->id == $user->id){
-            return true;
-        }
-
-        if ($step->campaign->user->id == $user->id){
-            return true;
-        }
-
-        if ($step->campaign->theme && $step->campaign->theme->user->id == $user->id){
-            return true;
-        }
-
-        return false;
+        return $step->user->id == $user->id or
+            $step->campaign->user->id == $user->id or
+            $step->campaign->theme->user->id == $user->id;
     }
 
     /**
@@ -97,5 +78,10 @@ class StepPolicy
     public function forceDelete(User $user, Step $step): bool
     {
         return false;
+    }
+
+    public function administer(User $user): bool
+    {
+        return $user->hasPermissionTo(PermissionsEnum::EDIT_STEPS->value);
     }
 }
