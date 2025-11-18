@@ -17,6 +17,23 @@ class UsersSeeder extends Seeder
     public function run(): void
     {
 
+
+        /**
+         *  Create predefinied system admin user
+         */
+        $adminUser = User::factory()
+            ->create(
+                ['password' => 'adminsecretpass', 
+                             'email' => 'admindelulu@delulusys.com',
+                             'username' => 'deluluadmin' 
+                             ]
+            );
+
+        $adminUser->assignRole(RolesEnum::SYSADMIN->value);
+
+        /**
+         *  Seed random users
+         */
         foreach (Role::all() as $role) {
             $users = User::factory(5)
                 ->create(
@@ -27,5 +44,7 @@ class UsersSeeder extends Seeder
                 $user->assignRole($role->name);
             }
         }
+
+        
     }
 }

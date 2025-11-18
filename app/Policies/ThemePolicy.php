@@ -5,10 +5,21 @@ namespace App\Policies;
 use App\Enums\PermissionsEnum;
 use App\Models\Theme;
 use App\Models\User;
+use App\Enums\RolesEnum;
 use Illuminate\Auth\Access\Response;
 
 class ThemePolicy
 {
+    /**
+     * System admin pass
+     */
+    public function before(User $user, $ability)
+    {
+        if ($user->hasRole(RolesEnum::SYSADMIN->value)) {
+            return true; // admin bypasses all checks
+        }
+    }
+
     /**
      * Determine whether the user can view any models.
      */

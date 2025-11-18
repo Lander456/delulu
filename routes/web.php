@@ -15,21 +15,31 @@ Route::get('/', function () {
     return view('auth.register');
 });
 
-Route::view('/login', 'auth.login')
-    ->middleware('guest')
+Route::middleware('auth')->group(function (){
+    
+    Route::get('/home', [HomeController::class, 'index'])
+    ->name('home');
+});
+
+Route::middleware('guest')->group(function (){
+    
+    Route::view('/login', 'auth.login')
     ->name('login');
+    Route::get('/register', function() {
+        return view('auth.register');
+    });
+    Route::post('/register', action: Register::class);
 
-Route::get('/register', function() {
-    return view('auth.register');
-})->middleware('guest');
+});
 
-Route::post('/register', Register::class)
-    ->middleware('guest');
+
+
+
+    
 
 Route::post('login', Login::class);
 
-Route::get('/home', [HomeController::class, 'index'])
-    ->name('home');
+
 
 Route::view('/activities', 'activity.index');
 
