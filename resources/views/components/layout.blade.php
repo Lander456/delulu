@@ -19,9 +19,9 @@
         @can('viewAny', Activity::class)
             <a href="{{ route('activities.index') }}">Activities</a>
         @endcan
-        @can('viewAny', Step::class)
+        @if(auth()->user()->steps()->exists())
             <a href="{{ route('steps.index') }}">Steps</a>
-        @endcan
+        @endif
         @can('viewAny', Campaign::class)
             <a href="{{ route('campaigns.index') }}">Campaigns</a>
         @endcan

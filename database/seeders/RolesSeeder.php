@@ -53,6 +53,7 @@ class RolesSeeder extends Seeder
                         PermissionsEnum::ASSIGN_WORKERS->value,
                         PermissionsEnum::APPROVE_WORKERS->value,
                         PermissionsEnum::VIEW_ASSIGNED_WORKERS->value,
+                        PermissionsEnum::VIEW_STEPS->value,
                     ]);
                     break;
 
