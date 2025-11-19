@@ -6,7 +6,12 @@
         </a>
     @endcan
 
-    <x-activity.form-section :activity="$activity" :editable="false" />
+    <x-shared.form-section :item="$activity" :editable="false" />
+
+    <div>
+        <label class="font-semibold">Assigned Coordinator:</label>
+        <div>{{ $activity->step->user->username }}</div>
+    </div>
 
     @can('update', $activity)
         <h4 class="text-lg font-semibold mt-6">Assigned users</h4>
