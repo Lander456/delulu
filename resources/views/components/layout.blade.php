@@ -1,10 +1,11 @@
-<!DOCTYPE html>
 @php
     use App\Models\Activity;
     use App\Models\Step;
     use App\Models\Campaign;
     use App\Models\Theme;
 @endphp
+
+<!DOCTYPE html>
 <html lang="en" data-theme="lofi">
 <head>
     <meta charset="UTF-8">
