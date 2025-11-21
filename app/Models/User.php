@@ -70,9 +70,10 @@ class User extends Authenticatable
         return $this->hasMany(Step::class);
     }
 
-    public function campaigns(): HasMany
+    public function campaigns(): BelongsToMany
     {
-        return $this->hasMany(Campaign::class);
+        return $this->belongsToMany(Campaign::class)
+            ->withTimestamps();
     }
 
     public function assignedCampaigns(): BelongsToMany

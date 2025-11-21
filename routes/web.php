@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ActivityController;
+use App\Http\Controllers\ActivityRequestController;
 use App\Http\Controllers\Auth\Login;
 use App\Http\Controllers\Auth\Logout;
 use App\Http\Controllers\Auth\Register;
@@ -49,6 +50,10 @@ Route::put('/activities/{activity}/users', [ActivityController::class, 'assignUs
 
 Route::delete('/activities/{activity}/users/{user}', [ActivityController::class, 'unassignUser'])->name('activities.unassignUser');
 
+Route::patch('/activities/{activity}/complete', [ActivityController::class, 'complete'])->name('activities.complete')->middleware('auth');
+
+Route::post('/activities/{activity}/request', [ActivityRequestController::class, 'storeRequest'])->name('activities.request')->middleware('auth');
+
 Route::resource('activities', ActivityController::class);
 
 Route::resource('steps', StepController::class);
@@ -57,13 +62,11 @@ Route::put('steps/{step}/activities', [StepController::class, 'assignActivity'])
 
 Route::delete('/steps/{step}/activities/{activity}', [StepController::class, 'unassignActivity'])->name('steps.unassignActivities');
 
-Route::resource('campaigns', CampaignController::class);
-
 Route::put('/campaigns/{campaign}/users', [CampaignUserController::class, 'assignUsers'])->name('campaigns.assignUsers');
 
-Route::resource('themes', ThemeController::class);
+Route::resource('campaigns', CampaignController::class);
 
-Route::post('/activities/{activity}/request', [\App\Http\Controllers\ActivityRequestController::class, 'storeRequest'])->name('activities.request')->middleware('auth');
+Route::resource('themes', ThemeController::class);
 
 Route::resource('users', UserController::class);
 
