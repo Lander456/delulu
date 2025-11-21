@@ -3,11 +3,22 @@
 namespace App\Policies;
 
 use App\Enums\PermissionsEnum;
+use App\Enums\RolesEnum;
 use App\Models\Activity;
 use App\Models\User;
 
 class ActivityPolicy
 {
+    /**
+     * System admin pass
+     */
+    public function before(User $user, $ability)
+    {
+        if ($user->hasRole(RolesEnum::SYSADMIN->value)) {
+            return true; // admin bypasses all checks
+        }
+    }
+
     /**
      * Determine whether the user can view any models.
      */
@@ -43,6 +54,7 @@ class ActivityPolicy
      */
     public function update(User $user, Activity $activity): bool
     {
+        
         $parentStep = $activity->step;
 
         return $parentStep->user->id == $user->id;

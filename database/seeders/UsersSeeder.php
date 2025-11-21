@@ -18,6 +18,9 @@ class UsersSeeder extends Seeder
     public function run(): void
     {
 
+        /**
+         *  Seed random users
+         */
         foreach (Role::all() as $role) {
             $users = User::factory(5)
                 ->create(
@@ -28,6 +31,8 @@ class UsersSeeder extends Seeder
                 $user->assignRole($role->name);
             }
         }
+
+        
 
         $sysAdmin = User::factory()->create([
             'username' => 'sysadmin',

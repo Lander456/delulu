@@ -73,7 +73,7 @@ class User extends Authenticatable
         return $this->hasMany(Campaign::class);
     }
 
-    public function Themes(): HasMany
+    public function themes(): HasMany
     {
         return $this->hasMany(Theme::class);
     }

@@ -11,6 +11,16 @@ use Illuminate\Auth\Access\Response;
 class StepPolicy
 {
     /**
+     * System admin pass
+     */
+    public function before(User $user, $ability)
+    {
+        if ($user->hasRole(RolesEnum::SYSADMIN->value)) {
+            return true; // admin bypasses all checks
+        }
+    }
+
+    /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool

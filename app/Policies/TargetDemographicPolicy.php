@@ -4,11 +4,22 @@ namespace App\Policies;
 
 use App\Enums\PermissionsEnum;
 use App\Models\TargetDemographic;
+use App\Enums\RolesEnum;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
 class TargetDemographicPolicy
 {
+    /**
+     * System admin pass
+     */
+    public function before(User $user, $ability)
+    {
+        if ($user->hasRole(RolesEnum::SYSADMIN->value)) {
+            return true; // admin bypasses all checks
+        }
+    }
+
     /**
      * Determine whether the user can view any models.
      */

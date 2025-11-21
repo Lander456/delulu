@@ -12,6 +12,16 @@ use Spatie\Permission\Models\Permission;
 class InformationSourcePolicy
 {
     /**
+     * System admin pass
+     */
+    public function before(User $user, $ability)
+    {
+        if ($user->hasRole(RolesEnum::SYSADMIN->value)) {
+            return true; // admin bypasses all checks
+        }
+    }
+
+    /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool

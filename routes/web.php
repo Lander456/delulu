@@ -12,24 +12,34 @@ use App\Models\Activity;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('auth.register');
+    return view('auth.login', ['title' => 'Register']);
 });
 
-Route::view('/login', 'auth.login')
-    ->middleware('guest')
+Route::middleware('auth')->group(function (){
+    
+    Route::get('/home', [HomeController::class, 'index'])
+    ->name('home');
+});
+
+Route::middleware('guest')->group(function (){
+    
+    Route::view('/login', 'auth.login', ['title' => 'Login'])
     ->name('login');
+    Route::get('/register', function() {
+        return view('auth.register');
+    });
+    Route::post('/register', action: Register::class);
 
-Route::get('/register', function() {
-    return view('auth.register');
-})->middleware('guest');
+});
 
-Route::post('/register', Register::class)
-    ->middleware('guest');
+
+
+
+    
 
 Route::post('login', Login::class);
 
-Route::get('/home', [HomeController::class, 'index'])
-    ->name('home');
+
 
 Route::view('/activities', 'activity.index');
 
