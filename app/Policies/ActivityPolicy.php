@@ -10,13 +10,15 @@ use App\Models\User;
 class ActivityPolicy
 {
     /**
-     * System admin pass
+     * Determine whether the user is a sysadmin, thus having privileges to do anything
      */
-    public function before(User $user, $ability)
+    public function before(User $user): ?bool
     {
         if ($user->hasRole(RolesEnum::SYSADMIN->value)) {
             return true; // admin bypasses all checks
         }
+
+        return null;
     }
 
     /**
@@ -54,7 +56,7 @@ class ActivityPolicy
      */
     public function update(User $user, Activity $activity): bool
     {
-        
+
         $parentStep = $activity->step;
 
         return $parentStep->user->id == $user->id;

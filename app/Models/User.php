@@ -73,9 +73,18 @@ class User extends Authenticatable
         return $this->hasMany(Campaign::class);
     }
 
+    public function assignedCampaigns(): BelongsToMany
+    {
+        return $this->belongsToMany(Campaign::class);
+    }
     public function themes(): HasMany
     {
         return $this->hasMany(Theme::class);
+    }
+
+    public function activityRequests(): HasMany
+    {
+        return $this->hasMany(ActivityRequest::class);
     }
 
     public function getSteps()

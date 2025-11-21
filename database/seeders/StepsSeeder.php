@@ -23,10 +23,12 @@ class StepsSeeder extends Seeder
 
         foreach ($campaigns as $campaign) {
             foreach ($users as $user) {
-                Step::factory(rand(1, 4))
+                $maxOrder = $campaign->steps()->max('order') ?? 0;
+                Step::factory(1)
                     ->create([
                         'campaign_id' => $campaign->id,
-                        'user_id' => $user->id
+                        'user_id' => $user->id,
+                        'order' => $maxOrder + 1
                     ]);
                 $campaign->update(['current_step_id' => $campaign->steps()->first()->id]);
             }
