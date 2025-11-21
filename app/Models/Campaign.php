@@ -5,7 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Campaign extends Model
 {
@@ -24,13 +26,21 @@ class Campaign extends Model
     }
     public function steps(): HasMany
     {
-        return $this->hasMany(Step::class);
+        return $this->hasMany(Step::class)->orderBy('order');
     }
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
-
+    public function users(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class)
+            ->withTimestamps();
+    }
+    public function currentStep(): BelongsTo
+    {
+        return $this->belongsTo(Step::class, 'current_step_id');
+    }
     public function getSuccessRateAttribute(): float
     {
         $successValues = $this->steps->pluck('success_rate');

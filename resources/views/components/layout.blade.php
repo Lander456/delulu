@@ -18,7 +18,7 @@
 
     <!-- Top page header -->
     <nav class="flex items-center justify-between px-6 py-4 bg-primary text-white border-background border-3" >
-        
+
          <!-- Left part -->
         <div class="flex items-center space-x-4">
             <div class="text-center font-semibold px-8 py-4 text-4xl tracking-wide text-white bg-primary">
@@ -28,24 +28,24 @@
 
             <a href="/home" class="px-5 text-xl">Home</a>
 
-            <a href="{{ route('activities.index') }} " class="px-2 text-xl">Activities</a>
             @can('viewAny', Activity::class)
+            <a href="{{ route('activities.index') }} " class="px-2 text-xl">Activities</a>
             @endcan
 
-            <a href="{{ route('steps.index') }}" class="px-2 text-xl">Steps</a>
             @can('viewAny', Step::class)
+            <a href="{{ route('steps.index') }}" class="px-2 text-xl">Steps</a>
             @endcan
 
-            <a href="{{ route('campaigns.index') }}" class="px-2 text-xl">Campaigns</a>
             @can('viewAny', Campaign::class)
+            <a href="{{ route('campaigns.index') }}" class="px-2 text-xl">Campaigns</a>
             @endcan
 
-            <a href="{{ route('themes.index') }}" class="px-2 text-xl">Themes</a>
             @can('viewAny', Theme::class)
-             @endcan
+            <a href="{{ route('themes.index') }}" class="px-2 text-xl">Themes</a>
+            @endcan
 
         </div>
-        
+
 
         <!-- Right part -->
         <div class="flex items-center space-x-4">
@@ -65,7 +65,7 @@
             </form>
         </div>
     </nav>
-   
+
     <!-- Page body-->
     <div class="flex min-h-screen h-fill">
         <!-- Side bar -->

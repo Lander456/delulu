@@ -16,8 +16,13 @@
     <div>
         <h4 class="font-semibold">Assigned Activities:</h4>
         <x-shared.activity-table :activities="$step->activities" :step="$step" :showActions="true" />
-        <x-step.activity-assign-form :step="$step" :activities="$step->activities"/>
     </div>
+
+    @can('update', $step)
+        <a href="{{ route('activities.create', $step) }}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+            Add an activity
+        </a>
+    @endcan
 
 </x-layout>
 

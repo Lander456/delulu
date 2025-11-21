@@ -11,13 +11,15 @@ use Illuminate\Auth\Access\Response;
 class StepPolicy
 {
     /**
-     * System admin pass
+     * Determine whether the user is a sysadmin, thus having privileges to do anything
      */
-    public function before(User $user, $ability)
+    public function before(User $user): ?bool
     {
         if ($user->hasRole(RolesEnum::SYSADMIN->value)) {
             return true; // admin bypasses all checks
         }
+
+        return null;
     }
 
     /**
@@ -33,9 +35,19 @@ class StepPolicy
      */
     public function view(User $user, Step $step): bool
     {
-        return $step->user->id == $user->id or
-            $step->campaign->user->id == $user->id or
-            $step->campaign->theme->user->id == $user->id;
+        if ($step->user_id === $user->id) {
+            return true;
+        }
+
+        if ($step->campaign && $step->campaign->users->contains($user->id)) {
+            return true;
+        }
+
+        if ($step->campaign && $step->campaign->theme && $step->campaign->theme->user_id === $user->id) {
+            return true;
+        }
+
+        return false;
     }
 
     /**

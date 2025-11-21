@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Activity;
 use App\Models\Step;
 use App\Models\User;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -92,7 +93,7 @@ class StepController extends Controller
 
         $step->update($validated);
 
-        return redirect('/steps')->with('success', 'Step updated!');
+        return back()->with('success', 'Step updated!');
     }
 
     /**
@@ -104,6 +105,39 @@ class StepController extends Controller
 
         $step->delete();
 
-        return redirect('/steps')->with('success', 'Step deleted!');
+        return back()->with('success', 'Step deleted!');
+    }
+
+    public function assignActivity(Request $request, Step $step)
+    {
+        $this->authorize('update', $step);
+
+        $validated = $request->validate([
+            'activities' => ['nullable', 'array'],
+            'activities.*' => ['exists:activities,id'],
+        ]);
+
+        if (!empty($validated['activities']))
+        {
+            Activity::whereIn('id', $validated['activities'])
+                ->update(['step_id' => $step->id]);
+        }
+
+        return back()->with('success', 'Activities assigned!');
+    }
+
+    public function unassignActivity(Step $step, Activity $activity)
+    {
+        $this->authorize('update', $step);
+
+        if ($activity->step_id !== $step->id) {
+            abort(403, 'This activity is not assigned to this step!');
+        }
+
+        $activity->update([
+            'step_id' => null
+        ]);
+
+        return back()->with('success', 'Activity unassigned!');
     }
 }

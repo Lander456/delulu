@@ -12,6 +12,8 @@
     <x-shared.step-table :steps="$campaign->steps" :showActions="true" />
 
     @can('update', $campaign)
-
+        <a href="{{ route('steps.create', $campaign) }}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+            Add a step
+        </a>
     @endcan
 </x-layout>

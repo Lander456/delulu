@@ -23,6 +23,8 @@ return new class extends Migration
                 ->nullable();
             $table->float('success')
                 ->nullable();
+            $table->boolean('completed')
+                ->default(false);
             $table->timestamps();
         });
     }

@@ -11,20 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('steps', function (Blueprint $table) {
+        Schema::create('activity_requests', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('campaign_id')
-                ->constrained('campaigns')
-                ->cascadeOnDelete()
-                ->cascadeOnUpdate();
             $table->foreignId('user_id')
-                ->nullable()
                 ->constrained('users')
-                ->nullOnDelete()
-                ->cascadeOnUpdate();
-            $table->string('name');
-            $table->string('description')
-                ->nullable();
+                ->cascadeOnDelete();
+            $table->foreignId('activity_id')
+                ->constrained('activities')
+                ->cascadeOnDelete();
+            $table->enum('status', ['pending', 'approved', 'denied'])
+                ->default('pending');
             $table->timestamps();
         });
     }
@@ -34,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('steps');
+        Schema::dropIfExists('activity_requests');
     }
 };

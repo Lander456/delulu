@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Activity;
 use App\Models\Campaign;
+use App\Models\Step;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -48,7 +49,8 @@ class CampaignController extends Controller
             'name' => ['required', 'string'],
             'description' => ['string'],
             'theme_id' => ['required', 'exists:themes,id'],
-            'user_id' => ['required', 'exists:users,id']
+            'user_id' => ['required', 'exists:users,id'],
+            'current_step_id' => ['exists:steps,id'],
         ]);
 
         Campaign::create($campaign);
@@ -87,7 +89,8 @@ class CampaignController extends Controller
             'name' => ['required', 'string'],
             'description' => ['string'],
             'theme_id' => ['required', 'exists:themes,id'],
-            'user_id' => ['required', 'exists:users,id']
+            'user_id' => ['required', 'exists:users,id'],
+            'current_step_id' => ['exists:steps,id']
         ]);
 
         $campaign->update($validated);

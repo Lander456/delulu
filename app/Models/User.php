@@ -60,7 +60,9 @@ class User extends Authenticatable
 
     public function activities(): BelongsToMany
     {
-        return $this->belongsToMany(Activity::class);
+        return $this->belongsToMany(Activity::class)
+            ->withPivot('completed')
+            ->withTimestamps();
     }
 
     public function steps(): HasMany
@@ -68,14 +70,24 @@ class User extends Authenticatable
         return $this->hasMany(Step::class);
     }
 
-    public function campaigns(): HasMany
+    public function campaigns(): BelongsToMany
     {
-        return $this->hasMany(Campaign::class);
+        return $this->belongsToMany(Campaign::class)
+            ->withTimestamps();
     }
 
+    public function assignedCampaigns(): BelongsToMany
+    {
+        return $this->belongsToMany(Campaign::class);
+    }
     public function themes(): HasMany
     {
         return $this->hasMany(Theme::class);
+    }
+
+    public function activityRequests(): HasMany
+    {
+        return $this->hasMany(ActivityRequest::class);
     }
 
     public function getSteps()

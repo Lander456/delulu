@@ -20,11 +20,23 @@ class ActivityController extends Controller
     {
         $this->authorize('viewAny', Activity::class);
 
-        $activities = Activity::with(['step.user'])->get()
-            ->filter(fn ($activity) => Gate::allows('view', $activity))
-            ->values();
+        $user = auth()->user();
 
-        return view('activity.index', compact('activities'));
+        $activities = Activity::select('activities.*')
+            ->join('steps', 'steps.id', '=', 'activities.step_id')
+            ->join('campaigns', 'campaigns.id', '=', 'steps.campaign_id')
+            ->join('campaign_user', 'campaign_user.campaign_id', '=', 'campaigns.id')
+            ->where('campaign_user.user_id', $user->id)
+            ->with(['step.campaign', 'step.user'])
+            ->get();
+
+        $ongoingActivities = $activities->where('completed', false)->values();
+        $completedActivities = $activities->where('completed', true)->values();
+
+        return view('activity.index', [
+            'ongoingActivities' => $ongoingActivities,
+            'completedActivities' => $completedActivities,
+        ]);
     }
 
     /**
@@ -156,13 +168,39 @@ class ActivityController extends Controller
         $activity->users()->sync(array_merge($validated['users'], $activity->users()->pluck('id')->toArray()));
         $activity->save();
 
-        return redirect()->back()->with('success', 'Users assigned to activity!');
+        return back()->with('success', 'Users assigned to activity!');
     }
 
     public function unassignUser(Activity $activity, User $user)
     {
         $activity->users()->detach($user);
 
-        return redirect()->back()->with('success', 'User unassigned from activity!');
+        return back()->with('success', 'User unassigned from activity!');
+    }
+
+    public function mark(Request $request, Activity $activity)
+    {
+        $request->validate([
+            'completed' => ['required','boolean']
+        ]);
+
+        $activity->users()->updateExistingPivot(auth()->id(), ['completed' => $request->completed]);
+
+        return back()->with('success', 'Activity completed!');
+    }
+
+    public function complete(Request $request, Activity $activity)
+    {
+        $this->authorize('update', $activity);
+
+        $request->validate([
+            'completed' => ['required','boolean']
+        ]);
+
+        $activity->update([
+            'completed' => $request->boolean('completed')
+        ]);
+
+        return back()->with('success', 'Activity completed!');
     }
 }
