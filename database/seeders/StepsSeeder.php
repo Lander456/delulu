@@ -28,6 +28,7 @@ class StepsSeeder extends Seeder
                         'campaign_id' => $campaign->id,
                         'user_id' => $user->id
                     ]);
+                $campaign->update(['current_step_id' => $campaign->steps()->first()->id]);
             }
         }
     }
