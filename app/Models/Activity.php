@@ -23,7 +23,9 @@ class Activity extends Model
     ];
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'activity_user');
+        return $this->belongsToMany(User::class, 'activity_user')
+            ->withPivot('completed')
+            ->withTimestamps();
     }
     public function step(): BelongsTo
     {

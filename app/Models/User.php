@@ -60,7 +60,9 @@ class User extends Authenticatable
 
     public function activities(): BelongsToMany
     {
-        return $this->belongsToMany(Activity::class);
+        return $this->belongsToMany(Activity::class)
+            ->withPivot('completed')
+            ->withTimestamps();
     }
 
     public function steps(): HasMany

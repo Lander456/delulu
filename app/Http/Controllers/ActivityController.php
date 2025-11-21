@@ -165,4 +165,15 @@ class ActivityController extends Controller
 
         return back()->with('success', 'User unassigned from activity!');
     }
+
+    public function mark(Request $request, Activity $activity)
+    {
+        $request->validate([
+            'completed' => ['required','boolean']
+        ]);
+
+        $activity->users()->updateExistingPivot(auth()->id(), ['completed' => $request->completed]);
+
+        return back()->with('success', 'Activity completed!');
+    }
 }

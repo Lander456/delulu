@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('activity_user', function (Blueprint $table) {
+            $table->id();
             $table->foreignId('activity_id')
                 ->constrained('activities')
                 ->cascadeOnDelete()
@@ -20,6 +21,8 @@ return new class extends Migration
                 ->constrained('users')
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
+            $table->boolean('completed')->nullable();
+            $table->timestamps();
         });
     }
 
