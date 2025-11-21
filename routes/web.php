@@ -41,6 +41,10 @@ Route::resource('activities', ActivityController::class);
 
 Route::resource('steps', StepController::class);
 
+Route::put('steps/{step}/activities', [StepController::class, 'assignActivity'])->name('steps.assignActivities');
+
+Route::delete('/steps/{step}/activities/{activity}', [StepController::class, 'unassignActivity'])->name('steps.unassignActivities');
+
 Route::resource('campaigns', CampaignController::class);
 
 Route::resource('themes', ThemeController::class);

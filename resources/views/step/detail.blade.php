@@ -1,37 +1,23 @@
 <x-layout>
-    name: {{ $step->name }}<br>
-    description: {{ $step->description }}<br>
-    <h4>Designated activities</h4>
-    <table>
-        <tr>
-            <th>
-                Activity name
-            </th>
-            <th>
-                Success rate
-            </th>
-        </tr>
-    @forelse($step->activities()->get() as $activity)
-        <tr>
-            <td>
-                {{ $activity->name }}
-            </td>
-            <td>
-                @if($activity->success != null)
-                    {{ number_format($activity->success * 100, 2) }}%
-                @else
-                    Activity not performed yet
-                @endif
-            </td>
-            <td>
-                <form action={{ route('activities.show', $activity) }} method="GET">
-                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">View activity</button>
-                </form>
-            </td>
-        </tr>
-    @empty
-        No activities designated for this step :)
-    @endforelse
-    </table>
+    <x-slot:title>{{ $step->name }}</x-slot:title>
+    @can('update', $step)
+        <a href="{{ route("steps.edit", $step) }}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+            Edit
+        </a>
+    @endcan
+
+    <x-shared.form-section :item="$step" :editable="false"/>
+
+    <div>
+        <label class="font-semibold">Assigned Coordinator:</label>
+        <div>{{ $step->user->username }}</div>
+    </div>
+
+    <div>
+        <h4 class="font-semibold">Assigned Activities:</h4>
+        <x-shared.activity-table :activities="$step->activities" :step="$step" :showActions="true" />
+        <x-step.activity-assign-form :step="$step" :activities="$step->activities"/>
+    </div>
+
 </x-layout>
 
