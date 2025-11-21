@@ -17,15 +17,14 @@
 <body>
 
     <!-- Top page header -->
-    <!-- <nav class="flex items-center justify-between px-6 py-4 bg-gray-800 text-white">-->
     <nav class="flex items-center justify-between px-6 py-4 bg-primary text-white border-background border-3" >
         
          <!-- Left part -->
         <div class="flex items-center space-x-4">
-            <div class="text-center font-semibold px-10 py-4 text-4xl tracking-wide text-white bg-primary">
+            <div class="text-center font-semibold px-8 py-4 text-4xl tracking-wide text-white bg-primary">
                 DELULU
             </div>
-            <span class="inline-block w-[2px] h-10 bg-white mx-3"></span>
+            <span class="inline-block w-[2px] h-18 bg-white mx-3"></span>
 
             <a href="/home" class="px-5 text-xl">Home</a>
 
@@ -50,6 +49,8 @@
 
         <!-- Right part -->
         <div class="flex items-center space-x-4">
+           
+            
             @if(Auth::check())
                 <span>{{ Auth::user()->username }}</span>
             @else
@@ -58,7 +59,7 @@
 
             <form method="POST" action="{{ route('logout') }}" class="flex items-center">
                 @csrf
-                <button type="submit" class="px-3 py-1 bg-white text-primary font-semibold rounded hover:bg-gray-200">
+                <button type="submit" class="px-3 py-1 bg-white text-primary font-semibold rounded  hover:bg-primary-highlight cursor-pointer">
                     Logout
                 </button>
             </form>
@@ -66,7 +67,7 @@
     </nav>
    
     <!-- Page body-->
-    <div class="flex min-h-screen">
+    <div class="flex min-h-screen h-fill">
         <!-- Side bar -->
         <div class="flex flex-col w-64 min-w-64 bg-background-darker">
             <div class="font-semibold text-2xl px-5 py-4 text-white">
@@ -81,12 +82,26 @@
         </div>
 
         <!-- Page content -->
-        {{ $slot }}
+        <div class="px-5 py-4 flex-1 bg-background">
+            {{ $slot }}
+        </div>
         @if(session('success'))
             <span>{{ session('success') }}</span>
         @endif
     </div>
-
+    <footer class="flex bg-gray-800 gap-4 text-white p-4 text-center">
+        <div class="block ml-auto center-left">
+            <div class="block content-center">
+                <span>&copy; 2025 Delulu</span><br>
+                <span>xtopint00 & xpokorj00 </span>
+            </div>
+        </div>
+        <div class="flex min-w-16">
+            <div class="tenor-gif-embed" data-postid="21401933" data-share-method="host" data-aspect-ratio="0.784375" data-width="100%">
+                <a href="https://tenor.com/view/vergil-chair-dmc-yamato-gif-21401933">Vergil Chair GIF</a>from 
+                <a href="https://tenor.com/search/vergil-gifs">Vergil GIFs</a></div> <script type="text/javascript" async src="https://tenor.com/embed.js"></script>
+            </div>
+    </footer>
     
 </body>
 </html>

@@ -10,7 +10,7 @@
     <div class="flex w-full">
 
         
-        <button @click="open = !open" class="flex justify-between items-center py-2 px-2 w-full hover:bg-primary-highlight">
+        <button @click="open = !open" class="flex justify-between items-center py-2 px-2 w-full hover:bg-primary-highlight cursor-pointer">
             <a href="{{ route('campaigns.show', $campaign) }}" class="font-semibold py-1 text-white block  hover:underline">
                 {{ $campaign->name }}
             </a>
