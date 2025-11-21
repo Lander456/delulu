@@ -19,7 +19,8 @@ class Activity extends Model
         'success',
         'step_id',
         'user_id',
-        'status'
+        'status',
+        'completed'
     ];
     public function users(): BelongsToMany
     {

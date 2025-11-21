@@ -176,4 +176,19 @@ class ActivityController extends Controller
 
         return back()->with('success', 'Activity completed!');
     }
+
+    public function complete(Request $request, Activity $activity)
+    {
+        $this->authorize('update', $activity);
+
+        $request->validate([
+            'completed' => ['required','boolean']
+        ]);
+
+        $activity->update([
+            'completed' => $request->boolean('completed')
+        ]);
+
+        return back();
+    }
 }
