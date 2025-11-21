@@ -47,4 +47,17 @@ class Activity extends Model
     {
         return $this->users()->wherePivot('completed', null)->count();
     }
+    public function getSuccessRateAttribute(): ?float
+    {
+        $successful = $this->users()->wherePivot('completed', true)->count();
+        $failed = $this->users()->wherePivot('completed', false)->count();
+
+        $total = $successful + $failed;
+
+        if ($total === 0) {
+            return null;
+        }
+
+        return round(($successful / $total) * 100, 2);
+    }
 }
