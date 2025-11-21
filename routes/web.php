@@ -9,6 +9,7 @@ use App\Http\Controllers\CampaignUserController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\StepController;
 use App\Http\Controllers\ThemeController;
+use App\Http\Controllers\UserController;
 use App\Models\Activity;
 use Illuminate\Support\Facades\Route;
 
@@ -63,6 +64,8 @@ Route::put('/campaigns/{campaign}/users', [CampaignUserController::class, 'assig
 Route::resource('themes', ThemeController::class);
 
 Route::post('/activities/{activity}/request', [\App\Http\Controllers\ActivityRequestController::class, 'storeRequest'])->name('activities.request')->middleware('auth');
+
+Route::resource('users', UserController::class);
 
 Route::post('/logout', Logout::class)
     ->middleware('auth')

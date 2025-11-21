@@ -156,13 +156,13 @@ class ActivityController extends Controller
         $activity->users()->sync(array_merge($validated['users'], $activity->users()->pluck('id')->toArray()));
         $activity->save();
 
-        return redirect()->back()->with('success', 'Users assigned to activity!');
+        return back()->with('success', 'Users assigned to activity!');
     }
 
     public function unassignUser(Activity $activity, User $user)
     {
         $activity->users()->detach($user);
 
-        return redirect()->back()->with('success', 'User unassigned from activity!');
+        return back()->with('success', 'User unassigned from activity!');
     }
 }
