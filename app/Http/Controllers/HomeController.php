@@ -18,7 +18,7 @@ class HomeController extends Controller
         $steps = $user->getSteps();
         $stepIds = $steps->pluck('id');
         $ownedActivities = Activity::whereIn('step_id', $stepIds)->get();
-        $campaigns = $user->campaigns()->get();
+        $campaigns = $user->getCampaigns();
         $themes = $user->themes()->get();
 
             

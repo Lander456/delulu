@@ -65,11 +65,17 @@ class User extends Authenticatable
             ->withTimestamps();
     }
 
+    /**
+     * Coordinators steps.
+     */
     public function steps(): HasMany
     {
         return $this->hasMany(Step::class);
     }
 
+    /**
+     * Campain leaders campaigns.
+     */
     public function campaigns(): BelongsToMany
     {
         return $this->belongsToMany(Campaign::class)
