@@ -36,8 +36,19 @@ class CampaignPolicy
      */
     public function view(User $user, Campaign $campaign): bool
     {
-        return $campaign->user->id == $user->id or
-            $campaign->theme->user->id == $user->id;
+        if ($campaign->user_id === $user->id){
+            return true;
+        }
+
+        if ($campaign->theme && $campaign->theme->user_id === $user->id){
+            return true;
+        }
+
+        if ($campaign->users()->where('user_id', $user->id)->exists()){
+            return true;
+        }
+
+        return false;
     }
 
     /**
