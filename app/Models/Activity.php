@@ -35,4 +35,16 @@ class Activity extends Model
     {
         return $this->hasMany(ActivityRequest::class);
     }
+    public function getSuccessfullyCompletedCountAttribute(): int
+    {
+        return $this->users()->wherePivot('completed', true)->count();
+    }
+    public function getFailedCompletedCountAttribute(): int
+    {
+        return $this->users()->wherePivot('completed', false)->count();
+    }
+    public function getPendingCountAttribute(): int
+    {
+        return $this->users()->wherePivot('completed', null)->count();
+    }
 }
