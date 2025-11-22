@@ -174,4 +174,31 @@ class ThemeController extends Controller
 
         return back()->with('success', 'Area of interest unassigned from theme!');
     }
+
+    public function assignInformationSources(Request $request, Theme $theme)
+    {
+        $this->authorize('update', $theme);
+
+        $validated = $request->validate([
+            'informationSources' => ['required','array'],
+            'informationSources.*' => ['exists:information_sources,id'],
+        ]);
+
+        $existingInformationSourceIds = $theme->informationSources()->pluck('information_sources.id')->all();
+
+        $theme->targetDemographics()->sync(array_unique(array_merge($existingInformationSourceIds, $validated['informationSources'])));
+
+        $theme->save();
+
+        return back()->with('success', 'Information sources assigned to activity!');
+    }
+
+    public function unassignInformationSource(Theme $theme, InformationSource $informationSource)
+    {
+        $this->authorize('update', $theme);
+
+        $theme->informationSources()->detach($informationSource);
+
+        return back()->with('success', 'Information source unassigned from theme!');
+    }
 }
