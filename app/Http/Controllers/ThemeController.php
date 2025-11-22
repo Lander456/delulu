@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\RolesEnum;
 use App\Models\AreaOfInterest;
+use App\Models\InformationSource;
 use App\Models\TargetDemographic;
 use App\Models\Theme;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -111,7 +112,7 @@ class ThemeController extends Controller
         $this->authorize('update', $theme);
 
         $validated = $request->validate([
-            'targetDemographics' => ['nullable','array'],
+            'targetDemographics' => ['required','array'],
             'targetDemographics.*' => ['exists:target_demographics,id'],
         ]);
 
@@ -138,7 +139,7 @@ class ThemeController extends Controller
         $this->authorize('update', $theme);
 
         $validated = $request->validate([
-            'areasOfInterest' => ['nullable','array'],
+            'areasOfInterest' => ['required','array'],
             'areasOfInterest.*' => ['exists:area_of_interests,id'],
         ]);
 
@@ -158,5 +159,32 @@ class ThemeController extends Controller
         $theme->areasOfInterest()->detach($areaOfInterest);
 
         return back()->with('success', 'Area of interest unassigned from theme!');
+    }
+
+    public function assignInformationSources(Request $request, Theme $theme)
+    {
+        $this->authorize('update', $theme);
+
+        $validated = $request->validate([
+            'informationSources' => ['required','array'],
+            'informationSources.*' => ['exists:information_sources,id'],
+        ]);
+
+        $existingInformationSourceIds = $theme->informationSources()->pluck('information_sources.id')->all();
+
+        $theme->targetDemographics()->sync(array_unique(array_merge($existingInformationSourceIds, $validated['informationSources'])));
+
+        $theme->save();
+
+        return back()->with('success', 'Information sources assigned to activity!');
+    }
+
+    public function unassignInformationSource(Theme $theme, InformationSource $informationSource)
+    {
+        $this->authorize('update', $theme);
+
+        $theme->informationSources()->detach($informationSource);
+
+        return back()->with('success', 'Information source unassigned from theme!');
     }
 }

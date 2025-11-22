@@ -2,13 +2,16 @@
 
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\ActivityRequestController;
+use App\Http\Controllers\AreaOfInterestController;
 use App\Http\Controllers\Auth\Login;
 use App\Http\Controllers\Auth\Logout;
 use App\Http\Controllers\Auth\Register;
 use App\Http\Controllers\CampaignController;
 use App\Http\Controllers\CampaignUserController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\InformationSourceController;
 use App\Http\Controllers\StepController;
+use App\Http\Controllers\TargetDemographicController;
 use App\Http\Controllers\ThemeController;
 use App\Http\Controllers\UserController;
 use App\Models\Activity;
@@ -70,13 +73,23 @@ Route::put('/themes/{theme}/TargetDemographics', [ThemeController::class, 'assig
 
 Route::put('/themes/{theme}/AreasOfInterest', [ThemeController::class, 'assignAreasOfInterest'])->name('themes.assignAreasOfInterest');
 
+Route::put('/themes/{theme}/InformationSources', [ThemeController::class, 'assignInformationSources'])->name('themes.assignInformationSources');
+
 Route::delete('/themes/{theme}/TargetDemographics/{targetDemographic}', [ThemeController::class, 'unassignTargetDemographic'])->name('themes.unassignTargetDemographic');
 
 Route::delete('/themes/{theme}/AreasOfInterest/{areaOfInterest}', [ThemeController::class, 'unassignAreaOfInterest'])->name('themes.unassignAreaOfInterest');
 
+Route::delete('/themes/{theme}/InformationSources/{informationSource}', [ThemeController::class, 'unassignInformationSource'])->name('themes.unassignInformationSource');
+
 Route::resource('themes', ThemeController::class);
 
 Route::resource('users', UserController::class);
+
+Route::resource('areasOfInterest', AreaOfInterestController::class);
+
+Route::resource('targetDemographics', TargetDemographicController::class);
+
+Route::resource('informationSources', InformationSourceController::class);
 
 Route::post('/logout', Logout::class)
     ->middleware('auth')
