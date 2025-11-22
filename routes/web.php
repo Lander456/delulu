@@ -42,8 +42,6 @@ Route::middleware('guest')->group(function (){
 
 Route::post('login', Login::class);
 
-
-
 Route::view('/activities', 'activity.index');
 
 Route::put('/activities/{activity}/users', [ActivityController::class, 'assignUsers'])->name('activities.assignUsers');
@@ -56,15 +54,25 @@ Route::post('/activities/{activity}/request', [ActivityRequestController::class,
 
 Route::resource('activities', ActivityController::class);
 
+
 Route::resource('steps', StepController::class);
 
 Route::put('steps/{step}/activities', [StepController::class, 'assignActivity'])->name('steps.assignActivities');
 
 Route::delete('/steps/{step}/activities/{activity}', [StepController::class, 'unassignActivity'])->name('steps.unassignActivities');
 
+
 Route::put('/campaigns/{campaign}/users', [CampaignUserController::class, 'assignUsers'])->name('campaigns.assignUsers');
 
 Route::resource('campaigns', CampaignController::class);
+
+Route::put('/themes/{theme}/TargetDemographics', [ThemeController::class, 'assignTargetDemographics'])->name('themes.assignTargetDemographics');
+
+Route::put('/themes/{theme}/AreasOfInterest', [ThemeController::class, 'assignAreasOfInterest'])->name('themes.assignAreasOfInterest');
+
+Route::delete('/themes/{theme}/TargetDemographics/{targetDemographic}', [ThemeController::class, 'unassignTargetDemographic'])->name('themes.unassignTargetDemographic');
+
+Route::delete('/themes/{theme}/AreasOfInterest/{areaOfInterest}', [ThemeController::class, 'unassignAreaOfInterest'])->name('themes.unassignAreaOfInterest');
 
 Route::resource('themes', ThemeController::class);
 
