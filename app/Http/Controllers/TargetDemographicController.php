@@ -16,7 +16,8 @@ class TargetDemographicController extends Controller
     {
         $this->authorize('list', TargetDemographic::class);
 
-        return TargetDemographic::all();
+        $demos = TargetDemographic::all();
+        return view('targetDemographics.index', ['targetDemographics' => $demos]);
     }
 
     /**

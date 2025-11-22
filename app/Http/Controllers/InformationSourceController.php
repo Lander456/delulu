@@ -6,6 +6,7 @@ use App\Models\InformationSource;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 
+
 class InformationSourceController extends Controller
 {
     use AuthorizesRequests;
@@ -15,7 +16,10 @@ class InformationSourceController extends Controller
      */
     public function index()
     {
-        return InformationSource::all();
+
+        $sources = InformationSource::all();
+        return view('informationSource.index', ['informationSource' => $sources]);
+
     }
 
     /**
