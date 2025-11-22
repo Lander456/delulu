@@ -23,9 +23,9 @@ class ThemeController extends Controller
                 'themes' => $themes
             ]);
         }
-        $this->authorize('list', Theme::class);
 
-        $user = auth()->user();
+        $this->authorize('viewAny', Theme::class);
+
         $themes = Theme::all();
         return view('theme.index', ['themes' => $themes]);
     }
