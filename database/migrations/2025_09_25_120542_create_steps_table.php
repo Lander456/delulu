@@ -23,7 +23,7 @@ return new class extends Migration
                 ->nullOnDelete()
                 ->cascadeOnUpdate();
             $table->string('name');
-            $table->string('description')
+            $table->text('description')
                 ->nullable();
             $table->timestamps();
         });
