@@ -16,17 +16,25 @@ class ActivitiesSeeder extends Seeder
      */
     public function run(): void
     {
+        $activityNum = 0;
 
         $userIDs = User::all()->pluck('id');
 
-        Step::all()->each(function (Step $step) use ($userIDs) {
-            Activity::factory(rand(1, 5))
-                ->create(['step_id' => $step->id])
-                ->each (function (Activity $activity) use ($userIDs) {
-                    $activity->users()->attach(
-                        $userIDs->random(rand(0, 5))->toArray()
-                    );
-                });
+        Step::all()->each(function (Step $step) use ($userIDs, &$activityNum) {
+
+            $count = rand(1, 5);
+
+            for ($i = 0; $i < $count; $i++) {
+
+                $activity = Activity::factory()->create([
+                    'name' => "Example Activity $activityNum",
+                    'step_id' => $step->id
+                ]);
+
+                $activity->users()->attach($userIDs->random());
+
+                $activityNum++;
+            }
         });
     }
 }

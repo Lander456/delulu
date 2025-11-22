@@ -17,8 +17,8 @@ class CampaignUserSeeder extends Seeder
         $campaigns = Campaign::all();
 
         foreach($users as $user) {
-            $assignedCampaigns = $campaigns->random(rand(1, 3))->pluck('id')->toArray();
-            $user->campaigns()->sync($assignedCampaigns);
+            $assignedCampaigns = $campaigns->random()->pluck('id');
+            $user->assignedCampaigns()->sync($assignedCampaigns);
         }
     }
 }

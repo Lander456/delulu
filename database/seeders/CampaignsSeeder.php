@@ -19,13 +19,20 @@ class CampaignsSeeder extends Seeder
 
         $themes = Theme::all();
         $users = User::role(RolesEnum::CAMPAIGN_LEADER->value)->get();
+        $campaignNum = 0;
 
         foreach ($themes as $theme) {
             foreach ($users as $user) {
-                Campaign::factory(rand(1, 4))->create([
-                    'theme_id' => $theme->id,
-                    'user_id' => $user->id
-                ]);
+                $count = rand(1, 4);
+
+                for ($i = 0; $i < $count; $i++) {
+                    Campaign::factory()->create([
+                        'name' => "Example Campaign $campaignNum",
+                        'theme_id' => $theme->id,
+                        'user_id' => $user->id
+                    ]);
+                    $campaignNum++;
+                }
             }
         }
     }
