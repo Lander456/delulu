@@ -2,7 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Activity;
+use App\Models\ActivityRequest;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class ActivityRequestSeeder extends Seeder
@@ -12,6 +14,12 @@ class ActivityRequestSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        $requestor = User::where('username', 'requestor')->firstOrFail();
+
+        for ($i = 0; $i < 5; $i++) {
+            ActivityRequest::factory()->create([
+                'user_id' => $requestor->id,
+            ]);
+        }
     }
 }

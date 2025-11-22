@@ -33,7 +33,11 @@ Route::middleware('auth')->group(function (){
 
     Route::patch('/activities/{activity}/complete', [ActivityController::class, 'complete'])->name('activities.complete')->middleware('auth');
 
-    Route::post('/activities/{activity}/request', [ActivityRequestController::class, 'storeRequest'])->name('activities.request')->middleware('auth');
+    Route::post('/activities/{activity}/requests', [ActivityRequestController::class, 'storeRequest'])->name('activities.request')->middleware('auth');
+
+    Route::patch('/activities/{activity}/requests/{request}/approve', [ActivityRequestController::class, 'approve'])->name('activities.requests.approve')->middleware('auth');
+
+    Route::patch('/activities/{activity}/requests/{request}/reject', [ActivityRequestController::class, 'reject'])->name('activities.requests.reject')->middleware('auth');
 
     Route::resource('activities', ActivityController::class);
 
