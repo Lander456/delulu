@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Enums\RolesEnum;
+use App\Models\AreaOfInterest;
+use App\Models\TargetDemographic;
 use App\Models\Theme;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
@@ -102,5 +104,55 @@ class ThemeController extends Controller
         $theme->delete();
 
         return redirect('/themes')->with('success', 'Theme deleted!');
+    }
+
+    public function assignTargetDemographics(Request $request, Theme $theme)
+    {
+        $this->authorize('update', $theme);
+
+        $validated = $request->validate([
+            'targetDemographics' => ['nullable','array'],
+            'targetDemographics.*' => ['exists:target_demographics,id'],
+        ]);
+
+        $existingTargetDemoIds = $theme->targetDemographics()->pluck('target_demographics.id')->all();
+
+        $theme->targetDemographics()->sync(array_unique(array_merge($existingTargetDemoIds, $validated['targetDemographics'])));
+
+        $theme->save();
+
+        return back()->with('success', 'Target demographics assigned to theme!');
+    }
+
+    public function unassignTargetDemographic(Theme $theme, TargetDemographic $targetDemographic)
+    {
+        $theme->targetDemographics()->detach($targetDemographic);
+
+        return back()->with('success', 'Target demographic unassigned from theme!');
+    }
+
+    public function assignAreasOfInterest(Request $request, Theme $theme)
+    {
+        $this->authorize('update', $theme);
+
+        $validated = $request->validate([
+            'areasOfInterest' => ['nullable','array'],
+            'areasOfInterest.*' => ['exists:area_of_interests,id'],
+        ]);
+
+        $existingAreaOfInterestIds = $theme->areasOfInterest()->pluck('area_if_interests.id')->all();
+
+        $theme->targetDemographics()->sync(array_unique(array_merge($existingAreaOfInterestIds, $validated['targetDemographics'])));
+
+        $theme->save();
+
+        return back()->with('success', 'Areas of interest assigned to activity!');
+    }
+
+    public function unassignAreaOfInterest(Theme $theme, AreaOfInterest $areaOfInterest)
+    {
+        $theme->areasOfInterest()->detach($areaOfInterest);
+
+        return back()->with('success', 'Area of interest unassigned from theme!');
     }
 }
