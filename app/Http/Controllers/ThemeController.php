@@ -126,6 +126,8 @@ class ThemeController extends Controller
 
     public function unassignTargetDemographic(Theme $theme, TargetDemographic $targetDemographic)
     {
+        $this->authorize('update', $theme);
+
         $theme->targetDemographics()->detach($targetDemographic);
 
         return back()->with('success', 'Target demographic unassigned from theme!');
@@ -151,6 +153,8 @@ class ThemeController extends Controller
 
     public function unassignAreaOfInterest(Theme $theme, AreaOfInterest $areaOfInterest)
     {
+        $this->authorize('update', $theme);
+
         $theme->areasOfInterest()->detach($areaOfInterest);
 
         return back()->with('success', 'Area of interest unassigned from theme!');
