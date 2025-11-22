@@ -17,11 +17,14 @@ class ThemesSeeder extends Seeder
     {
         $users = User::role(RolesEnum::ADMIN->value)->get();
 
+        $themeNum = 0;
         foreach ($users as $user) {
             Theme::factory()
                 ->create([
+                    'name' => "Example Theme $themeNum",
                     'user_id' => $user->id,
                 ]);
+            $themeNum++;
         }
     }
 }

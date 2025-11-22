@@ -20,16 +20,23 @@ class StepsSeeder extends Seeder
 
         $campaigns = Campaign::all();
         $users = User::role(RolesEnum::COORDINATOR->value)->get();
+        $stepNum = 0;
 
         foreach ($campaigns as $campaign) {
             foreach ($users as $user) {
-                $maxOrder = $campaign->steps()->max('order') ?? 0;
-                Step::factory(1)
-                    ->create([
-                        'campaign_id' => $campaign->id,
-                        'user_id' => $user->id,
-                        'order' => $maxOrder + 1
-                    ]);
+                $count = rand(1, 5);
+
+                for ($i = 0; $i < $count; $i++) {
+                    $maxOrder = $campaign->steps()->max('order') ?? 0;
+                    Step::factory()
+                        ->create([
+                            'name' => "Example Step $stepNum",
+                            'campaign_id' => $campaign->id,
+                            'user_id' => $user->id,
+                            'order' => $maxOrder + 1
+                        ]);
+                    $stepNum++;
+                }
                 $campaign->update(['current_step_id' => $campaign->steps()->first()->id]);
             }
         }

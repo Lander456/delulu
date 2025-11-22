@@ -18,6 +18,23 @@ class AreasOfInterestSeeder extends Seeder
 
         $userIDs = User::all()->pluck('id');
         $themeIDs = Theme::all()->pluck('id');
+        $areaOfInterestNum = 0;
+
+        for ($i = 1; $i <= 5; $i++) {
+            $areaOfInterest = AreaOfInterest::factory()->create([
+                'name' => "Example area of interest $areaOfInterestNum"
+            ]);
+
+            $areaOfInterest->users()->attach(
+                $userIDs->random()
+            );
+
+            $areaOfInterest->themes()->attach(
+                $themeIDs->random()
+            );
+
+            $areaOfInterestNum++;
+        }
 
         AreaOfInterest::factory(5)
             ->create()
