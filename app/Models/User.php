@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\RolesEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -76,15 +77,15 @@ class User extends Authenticatable
     /**
      * Campain leaders campaigns.
      */
-    public function campaigns(): BelongsToMany
+    public function campaigns(): HasMany
     {
-        return $this->belongsToMany(Campaign::class)
-            ->withTimestamps();
+        return $this->hasMany(Campaign::class);
     }
 
     public function assignedCampaigns(): BelongsToMany
     {
-        return $this->belongsToMany(Campaign::class);
+        return $this->belongsToMany(Campaign::class)
+            ->withTimestamps();
     }
     public function themes(): HasMany
     {
@@ -98,21 +99,45 @@ class User extends Authenticatable
 
     public function getSteps()
     {
-        return Step::where('user_id', '=', $this->id)
-            ->orWhereHas('campaign', function ($query) {
-                $query->where('user_id', '=', $this->id)
-                    ->orWhereHas('theme', function ($query) {
-                        $query->where('user_id', '=', $this->id);
+        if( $this->hasRole(RolesEnum::SYSADMIN->value)){
+            return Step::all();
+        }
+
+
+        $userId = $this->id;
+        return Step::where('user_id', '=', $userId)
+            ->orWhereHas('campaign', function ($query)use($userId) : void {
+                $query->where('user_id', '=', $userId)
+                    ->orWhereHas('users', function ($query) use ($userId) {
+                        $query->where('users.id', $userId);
+                    })
+                    ->orWhereHas('theme', function ($query)use($userId) {
+                        $query->where('user_id', '=', $userId);
                     });
-            })->get();
+            })
+            ->orWhereHas('activities.users', function ($query) use ($userId) {
+                $query->where('users.id', $userId);
+            })
+            ->distinct()
+            ->get();
     }
 
     public function getCampaigns()
     {
-        return Campaign::where('user_id', '=', $this->id)
-            ->orWhereHas('theme', function ($query) {
-                $query->where('user_id', '=', $this->id);
-            })->get();
+         if( $this->hasRole(RolesEnum::SYSADMIN->value)){
+            return Campaign::all();
+        }
+
+        $userId = $this->id;
+        return Campaign::where('user_id', '=', $userId)
+            ->orWhereHas('theme', function ($query)use($userId) {
+                $query->where('user_id', '=', $userId);
+            })
+            ->orWhereHas('users', function ($query) use ($userId) {
+                $query->where('users.id', $userId);
+            })
+            ->distinct()
+            ->get();
     }
 
     public function getRoleAttribute()

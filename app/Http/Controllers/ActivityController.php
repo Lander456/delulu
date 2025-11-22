@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\RolesEnum;
+use Spatie\Permission\Traits\HasRoles;
 use App\Models\Activity;
 use App\Models\Theme;
 use App\Models\User;
@@ -18,6 +20,16 @@ class ActivityController extends Controller
      */
     public function index()
     {
+        if( auth()->user()->hasRole(RolesEnum::SYSADMIN->value)){
+            $activities = Activity::all();
+            $ongoingActivities = $activities->where('completed', false)->values();
+            $completedActivities = $activities->where('completed', true)->values();
+            return view('activity.index', [
+                'ongoingActivities' => $ongoingActivities,
+                'completedActivities' => $completedActivities,
+            ]);
+        }
+
         $this->authorize('viewAny', Activity::class);
 
         $user = auth()->user();

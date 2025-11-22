@@ -77,7 +77,8 @@
 
             <!-- List element-->
             @foreach($userCampaigns as $campaign)
-                <x-sidebarItem :campaign="$campaign" />
+                <x-sidebarItem 
+                    :campaign="$campaign"/>
             @endforeach
         </div>
 

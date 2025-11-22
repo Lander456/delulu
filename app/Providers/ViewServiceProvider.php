@@ -24,7 +24,7 @@ class ViewServiceProvider extends ServiceProvider
     public function boot(): void
     {
         view()->composer('components.layout', function ($view) {
-            $userCampaigns = auth()->user()->campaigns;
+            $userCampaigns = auth()->user()->getCampaigns();
             $view->with('userCampaigns', $userCampaigns);
         });
     }

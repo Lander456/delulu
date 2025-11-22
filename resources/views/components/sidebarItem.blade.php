@@ -1,3 +1,4 @@
+@props(['campaign', 'userSteps'])
 @php
     use App\Models\Step;
     use App\Models\Campaign;
@@ -23,17 +24,19 @@
     <!-- Dropdown menu -->
     <div>
 
-        @if(count($steps))
+        @if(count($steps) )
         
         <div x-show="open" x-transition class="mt-1 space-y-1">
             
             
             @foreach($steps as $step)
+            @can('view', $step)
             <div class="hover:bg-primary-highlight ">
                 <a href="{{ route('steps.show', $step)}}" class="block px-2 py-1 text-sm ml-4 text-white">
                     {{ $step->name }}
                 </a>
             </div>
+            @endcan
             @endforeach
         </div>
         @endif

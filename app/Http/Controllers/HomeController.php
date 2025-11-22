@@ -13,17 +13,13 @@ class HomeController extends Controller
     {
         $user = Auth::user(); 
         $assignedActivities = $user->activities()->get();
-
-
         $steps = $user->getSteps();
-        $stepIds = $steps->pluck('id');
-        $ownedActivities = Activity::whereIn('step_id', $stepIds)->get();
         $campaigns = $user->getCampaigns();
         $themes = $user->themes()->get();
 
             
         
-        return view('home', compact('assignedActivities', 'steps', 'ownedActivities', 'campaigns', 'themes'));
+        return view('home', compact('assignedActivities', 'steps', 'campaigns', 'themes'));
     }
 
     

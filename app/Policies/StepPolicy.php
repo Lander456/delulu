@@ -39,8 +39,13 @@ class StepPolicy
             return true;
         }
 
-        if ($step->campaign && $step->campaign->users->contains($user->id)) {
+        if ($step->campaign && $step->campaign->user_id === $user->id) {
             return true;
+        }
+        if ($step->activities()->whereHas('users', function ($q) use ($user) {
+            $q->where('users.id', $user->id);
+        })->exists()) {
+            return true; 
         }
 
         if ($step->campaign && $step->campaign->theme && $step->campaign->theme->user_id === $user->id) {
