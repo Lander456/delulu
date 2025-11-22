@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\RolesEnum;
 use App\Models\Theme;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
@@ -14,9 +15,17 @@ class ThemeController extends Controller
      */
     public function index()
     {
+        if( auth()->user()->hasRole(RolesEnum::SYSADMIN->value)){
+            $themes = Theme::all();
+            return view('theme.index', [
+                'themes' => $themes
+            ]);
+        }
         $this->authorize('list', Theme::class);
 
-        return Theme::all();
+        $user = auth()->user();
+        $themes = Theme::all();
+        return view('theme.index', ['themes' => $themes]);
     }
 
     /**
