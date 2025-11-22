@@ -18,22 +18,6 @@ class UsersSeeder extends Seeder
     public function run(): void
     {
 
-        /**
-         *  Seed random users
-         */
-        foreach (Role::all() as $role) {
-            $users = User::factory(5)
-                ->create(
-                    ['password' => 'secretpass']
-                );
-
-            foreach ($users as $user) {
-                $user->assignRole($role->name);
-            }
-        }
-
-        
-
         $sysAdmin = User::factory()->create([
             'username' => 'sysadmin',
             'email' => 'sysadmin@example.com',
