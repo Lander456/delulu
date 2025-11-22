@@ -9,6 +9,7 @@ use App\Models\TargetDemographic;
 use App\Models\Theme;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
+use App\Models\User;
 
 class ThemeController extends Controller
 {
@@ -75,7 +76,8 @@ class ThemeController extends Controller
     {
         $this->authorize('update', $theme);
 
-        return view('theme.edit', compact('theme'));
+        $users = User::all();
+        return view('theme.edit', compact('theme', 'users'));
     }
 
     /**
@@ -92,7 +94,7 @@ class ThemeController extends Controller
 
         $theme->update($validated);
 
-        return redirect('/themes')->with('success', 'Theme updated!');
+        return view('theme.detail', compact('theme'));
     }
 
     /**

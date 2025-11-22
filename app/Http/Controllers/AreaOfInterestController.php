@@ -19,7 +19,8 @@ class AreaOfInterestController extends Controller
     {
         $this->authorize(PermissionsEnum::VIEW_AREAS_OF_INTEREST->value, AreaOfInterest::class);
 
-        return AreaOfInterest::all();
+        $areas = AreaOfInterest::all();
+        return view('areaofinterest.index', ['areas' => $areas]);
     }
 
     /**
