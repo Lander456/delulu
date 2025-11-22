@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\RolesEnum;
 use App\Models\AreaOfInterest;
+use App\Models\InformationSource;
 use App\Models\TargetDemographic;
 use App\Models\Theme;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -38,7 +39,8 @@ class ThemeController extends Controller
     {
         $this->authorize('create', Theme::class);
 
-        return view('theme.create');
+        $users = User::all();
+        return view('theme.create', compact( 'users'));
     }
 
     /**
@@ -50,7 +52,8 @@ class ThemeController extends Controller
 
         $theme = $request->validate([
             'name' => ['required','string'],
-            'description' => ['string','nullable']
+            'description' => ['nullable','string','max:65535'],
+            'user_id' => ['nullable','exists:users,id']
         ]);
 
         Theme::create($theme);
@@ -65,7 +68,11 @@ class ThemeController extends Controller
     {
         $this->authorize('view', $theme);
 
-        return view('theme.detail', compact('theme'));
+        $areasOfInterest = AreaOfInterest::whereNotIn('id', $theme->areasOfInterest->pluck('id'))->get();
+        $targetDemographics = TargetDemographic::whereNotIn('id', $theme->targetDemographics->pluck('id'))->get();
+        $informationSources = InformationSource::whereNotIn('id', $theme->informationSources->pluck('id'))->get();
+        return view('theme.detail', 
+        compact('theme', 'areasOfInterest', 'targetDemographics', 'informationSources'));
     }
 
     /**
@@ -74,9 +81,11 @@ class ThemeController extends Controller
     public function edit(Theme $theme)
     {
         $this->authorize('update', $theme);
-
+        $areasOfInterest = AreaOfInterest::whereNotIn('id', $theme->areasOfInterest->pluck('id'))->get();
+        $targetDemographics = TargetDemographic::whereNotIn('id', $theme->targetDemographics->pluck('id'))->get();
+        $informationSources = InformationSource::whereNotIn('id', $theme->informationSources->pluck('id'))->get();
         $users = User::all();
-        return view('theme.edit', compact('theme', 'users'));
+        return view('theme.edit', compact('theme', 'users', 'areasOfInterest', 'targetDemographics', 'informationSources'));
     }
 
     /**
@@ -88,12 +97,17 @@ class ThemeController extends Controller
 
         $validated = $request->validate([
             'name' => ['required','string'],
-            'description' => ['string','nullable']
+            'description' => ['nullable','string','max:65535'],
+            'user_id' => ['nullable','exists:users,id']
         ]);
+
+        $areasOfInterest = AreaOfInterest::whereNotIn('id', $theme->areasOfInterest->pluck('id'))->get();
+        $targetDemographics = TargetDemographic::whereNotIn('id', $theme->targetDemographics->pluck('id'))->get();
+        $informationSources = InformationSource::whereNotIn('id', $theme->informationSources->pluck('id'))->get();
 
         $theme->update($validated);
 
-        return view('theme.detail', compact('theme'));
+        return view('theme.detail', compact('theme', 'areasOfInterest', 'targetDemographics', 'informationSources'));
     }
 
     /**
@@ -113,7 +127,7 @@ class ThemeController extends Controller
         $this->authorize('update', $theme);
 
         $validated = $request->validate([
-            'targetDemographics' => ['nullable','array'],
+            'targetDemographics' => ['required','array'],
             'targetDemographics.*' => ['exists:target_demographics,id'],
         ]);
 
@@ -140,14 +154,13 @@ class ThemeController extends Controller
         $this->authorize('update', $theme);
 
         $validated = $request->validate([
-            'areasOfInterest' => ['nullable','array'],
+            'areasOfInterest' => ['required','array'],
             'areasOfInterest.*' => ['exists:area_of_interests,id'],
         ]);
 
-        $existingAreaOfInterestIds = $theme->areasOfInterest()->pluck('area_if_interests.id')->all();
-
-        $theme->targetDemographics()->sync(array_unique(array_merge($existingAreaOfInterestIds, $validated['targetDemographics'])));
-
+        $existingAreaOfInterestIds = $theme->areasOfInterest()->pluck('area_of_interests.id')->all();
+        $theme->areasOfInterest()->sync(array_unique(array_merge($existingAreaOfInterestIds, $validated['areasOfInterest'])));
+        
         $theme->save();
 
         return back()->with('success', 'Areas of interest assigned to activity!');
