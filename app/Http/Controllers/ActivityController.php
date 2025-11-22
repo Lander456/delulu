@@ -177,7 +177,11 @@ class ActivityController extends Controller
             'users.*' => ['exists:users,id'],
         ]);
 
-        $activity->users()->sync(array_merge($validated['users'], $activity->users()->pluck('id')->toArray()));
+        $existingUserIds = $activity->users()->pluck('users.id')->all();
+
+        $activity->users()->sync(array_unique(array_merge($existingUserIds, $validated['users'])));
+
+
         $activity->save();
 
         return back()->with('success', 'Users assigned to activity!');
