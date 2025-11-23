@@ -17,8 +17,7 @@ return new class extends Migration
                 ->constrained('steps')
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
-            $table->string('name')
-                ->unique();
+            $table->string('name');
             $table->text('description')
                 ->nullable();
             $table->float('success')

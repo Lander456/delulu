@@ -20,7 +20,8 @@ class Activity extends Model
         'step_id',
         'user_id',
         'status',
-        'completed'
+        'completed',
+        'success'
     ];
     public function users(): BelongsToMany
     {
@@ -50,15 +51,21 @@ class Activity extends Model
     }
     public function getSuccessRateAttribute(): ?float
     {
+        return $this->success;
+    }
+    public function recalculateSuccessRate(): void
+    {
         $successful = $this->users()->wherePivot('completed', true)->count();
         $failed = $this->users()->wherePivot('completed', false)->count();
 
         $total = $successful + $failed;
 
         if ($total === 0) {
-            return null;
+            $this->update(['success' => 0]);
+            return;
         }
 
-        return round(($successful / $total) * 100, 2);
+        $successRate = round(($successful / $total) * 100, 2);
+        $this->update(['success' => $successRate]);
     }
 }

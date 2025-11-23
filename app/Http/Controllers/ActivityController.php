@@ -70,7 +70,7 @@ class ActivityController extends Controller
         $this->authorize('create', Activity::class);
 
         $validated = $request->validate([
-            'name' => ['required','string','unique:activities,name'],
+            'name' => ['required','string'],
             'description' => ['nullable','string','max:65535'],
             'step' => ['required','integer','exists:steps,id'],
         ]);
