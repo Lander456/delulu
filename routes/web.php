@@ -41,7 +41,7 @@ Route::middleware('auth')->group(function (){
     Route::patch('/activities/{activityRequest}/approve', [activityRequestController::class, 'approve'])->name('activityRequest.approve')->middleware('auth');
 
     Route::patch('/activities/{activityRequest}/reject', [activityRequestController::class, 'reject'])->name('activityRequest.reject')->middleware('auth');
-    
+
     Route::resource('activities', ActivityController::class);
 
     Route::resource('steps', StepController::class);
@@ -81,7 +81,7 @@ Route::middleware('auth')->group(function (){
 
     Route::patch('users/{user}/AddRole', [UserController::class, 'assignRole'])
     ->name('users.assignRole');
-   
+
     Route::resource('users', controller: UserController::class);
 
     Route::resource('areasOfInterest', AreaOfInterestController::class);
@@ -97,7 +97,7 @@ Route::middleware('guest')->group(function (){
     ->name('login');
     Route::get('/register', function() {
         return view('auth.register');
-    });
+    })->name('register');
     Route::post('/register', action: Register::class);
 
 });

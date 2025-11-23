@@ -22,8 +22,8 @@
                         <!-- Save Button -->
                         @can('update', $step)
                             <div class="flex flex-col  items-center w-32 text-black justify-center">
-                                
-                                <button type="submit" class="flex    text-white px-4 py-2 rounded hover:bg-primary-highlight">
+
+                                <button type="submit" class="flex bg-primary text-white px-4 py-2 rounded hover:bg-primary-highlight">
                                     Save
                                 </button>
                             </div>
@@ -40,7 +40,7 @@
                         placeholder="Step name"
                         value="{{ $step->name }}"
                         required
-                        class="w-1/2 w-min-64 flex font-semibold text-2xl px-5 py-2 mb-4 text-black bg-background focus:outline-none 
+                        class="w-1/2 w-min-64 flex font-semibold text-2xl px-5 py-2 mb-4 text-black bg-background focus:outline-none
                         focus:ring-2 focus:ring-primary border-background-darker border-2 rounded
                         input @error('name') input-error @enderror">
                         @error('name')
@@ -63,18 +63,18 @@
                         @error('username')
                         <span class="text-error text-red-600 text-sm">{{ $message }}</span>
                         @enderror
-                    </div> 
+                    </div>
 
                     <!-- Assigned Administrator -->
                     <label class="font-semibold text-lg px-5 mb-2">Assigned Coordinator:</label>
                     <div class="px-5 mb-4">
-                        @if(auth()->user()->hasRole(RolesEnum::SYSADMIN->value) 
+                        @if(auth()->user()->hasRole(RolesEnum::SYSADMIN->value)
                             || auth()->user()->hasRole(RolesEnum::ADMIN->value)
                             || auth()->user()->hasRole(RolesEnum::CAMPAIGN_LEADER->value))
-                            <select name="user_id" id="user_id" 
+                            <select name="user_id" id="user_id"
                                     class="w-1/4 w-min-64 px-4 py-2 bg-background border-background-darker rounded border-2">
                                 @foreach($users as $user)
-                                    <option value="{{ $user->id }}" class="text-black" 
+                                    <option value="{{ $user->id }}" class="text-black"
                                         @selected(optional($step->user)->id === $user->id)>
                                         {{ $user->username }}
                                     </option>
@@ -86,8 +86,8 @@
                             </div>
                              <input type="hidden" name="user_id" value="{{ $step->user->id }}">
                         @endif
-                    </div> 
-                    
+                    </div>
+
                     <!-- Campaign  -->
                     <label class="font-semibold text-lg px-5 mb-2">From Campaign:</label>
                     <div class="px-5 mb-4">
@@ -95,7 +95,7 @@
                             {{ $step->campaign->name }}
                         </div>
                         <input type="hidden" name="campaign_id" value="{{ $step->campaign->id }}">
-                    </div> 
+                    </div>
                 </div>
             </form>
         </div>

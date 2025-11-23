@@ -20,8 +20,7 @@ class TargetDemographicFactory extends Factory
             'name' => fake()->words(3, true),
             'description' => fake()->text(),
             'amount' => fake()->randomFloat(2, 0, 1),
-            'ethics' => fake()->words(3, true),
-            'relevance' => fake()->randomFloat(2, 0, 1),
+            'ethics' => fake()->words(3, true)
         ];
     }
 }

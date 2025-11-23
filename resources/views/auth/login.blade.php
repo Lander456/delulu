@@ -11,25 +11,25 @@
     <div class="min-h-screen flex flex-col items-center justify-center bg-background">
 
         <div class=" w-80">
-            
+
             <!-- Header -->
             <div class="shadow-md p-3 text-center font-semibold text-4xl tracking-wide text-white bg-primary">
                 DELULU
             </div>
-            
+
             <!-- Login body -->
             <div class="bg-white p-6 rounded-b shadow-md ">
                 <!-- Form body -->
                 <div class=" flex justify-center">
-                    <form method="POST" action="/login" class="w-full">
+                    <form method="POST" action="{{ route('login') }}" class="w-full">
                         @csrf
-                        
+
                         <!-- Username -->
                         <div class="mb-2">
                             <label for="username" class="block text-md font-semibold w-full text-left mb-1">
                                 Username
                             </label>
-                            
+
                             <input type="text"
                                 name="username"
                                 id="username"
@@ -42,13 +42,13 @@
                                     <span class="text-error text-red-600 text-sm">{{ $message }}</span>
                                 @enderror
                         </div>
-                           
+
                         <!-- Password -->
                         <div class="mb-2">
                             <label for="password" class="block text-md font-semibold w-full text-left mb-1">
                                 Password
                             </label>
-                            
+
                             <input type="password"
                             id="password"
                             name="password"
@@ -73,11 +73,11 @@
 
                 <p class="text-center text-sm">
                     Don't have an account yet?
-                    <a href="/register" class="font-bold font link link-primary text-primary underline">Sign Up</a>
+                    <a href="{{ route('register') }}" class="font-bold font link link-primary text-primary underline">Sign Up</a>
                 </p>
             </div>
         </div>
-    </div>  
+    </div>
 </body>
 </html>
 
