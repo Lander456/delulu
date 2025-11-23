@@ -20,8 +20,7 @@ return new class extends Migration
             $table->string('name');
             $table->text('description')
                 ->nullable();
-            $table->float('success')
-                ->nullable();
+            $table->float('success')->default(0);
             $table->boolean('completed')
                 ->default(false);
             $table->timestamps();

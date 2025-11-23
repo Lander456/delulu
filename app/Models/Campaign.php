@@ -46,12 +46,17 @@ class Campaign extends Model
     }
     public function getSuccessRateAttribute(): float
     {
-        $successValues = $this->steps->pluck('success_rate');
+        return $this->success;
+    }
+
+    public function recalculateSuccessRate()
+    {
+        $successValues = $this->steps->pluck('success');
 
         if ($successValues->isEmpty()) {
-            return 0;
+            $this->success = 0;
         }
 
-        return round($successValues->avg(), 2);
+        $this->success = round($successValues->avg(), 2);
     }
 }

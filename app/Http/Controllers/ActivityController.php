@@ -129,7 +129,7 @@ class ActivityController extends Controller
 
         if ($request->has('name')){
             $validated = $request->validate([
-                'name' => ['required','string','unique:activities,name'],
+                'name' => ['required','string'],
             ]);
 
             $activity->update(['name' => $validated['name']]);
@@ -201,6 +201,10 @@ class ActivityController extends Controller
         ]);
 
         $activity->users()->updateExistingPivot(auth()->id(), ['completed' => $request->completed]);
+
+        $activity->recalculateSuccessRate();
+        $activity->step->recalculateSuccessRate();
+        $activity->step->campaign->recalculateSuccessRate();
 
         return back();
     }

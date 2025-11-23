@@ -66,6 +66,7 @@ class Activity extends Model
         }
 
         $successRate = round(($successful / $total) * 100, 2);
+
         $this->update(['success' => $successRate]);
     }
 }

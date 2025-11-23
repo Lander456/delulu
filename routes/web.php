@@ -63,6 +63,14 @@ Route::middleware('auth')->group(function (){
 
     Route::resource('themes', ThemeController::class);
 
+    Route::put('/users/{user}/TargetDemographics', [UserController::class, 'assignTargetDemographics'])->name('users.assignTargetDemographics');
+
+    Route::put('users/{user}/AreasOfInterest', [UserController::class, 'assignAreasOfInterest'])->name('users.assignAreasOfInterest');
+
+    Route::delete('users/{user}/TargetDemographics/{targetDemographic}', [UserController::class, 'unassignTargetDemographic'])->name('users.unassignTargetDemographic');
+
+    Route::delete('users/{user}/AreasOfInterest/{areaOfInterest}', [UserController::class, 'unassignAreaOfInterest'])->name('users.unassignAreaOfInterest');
+
     Route::resource('users', controller: UserController::class);
 
     Route::resource('areasOfInterest', AreaOfInterestController::class);

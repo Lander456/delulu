@@ -36,12 +36,16 @@ class Step extends Model
 
     public function getSuccessRateAttribute(): float
     {
+        return $this->success;
+    }
+
+    public function recalculateSuccessRate() {
         $successValues = $this->activities->pluck('success')->filter();
 
         if ($successValues->isEmpty()) {
-            return 0;
+            $this->success = 0;
         }
 
-        return round($successValues->avg(), 2);
+        $this->success = round($successValues->avg(), 2);
     }
 }
