@@ -23,34 +23,41 @@ class UsersSeeder extends Seeder
             'email' => 'sysadmin@example.com',
             'password' => bcrypt('sysadminpass')
         ]);
-        $sysAdmin->assignRole('sysadmin');
+        $sysAdmin->assignRole(RolesEnum::SYSADMIN->value);
 
         $themeAdmin = User::factory()->create([
             'username' => 'themeAdmin',
             'email' => 'themeAdmin@example.com',
             'password' => bcrypt('themeAdminpass')
         ]);
-        $themeAdmin->assignRole('admin');
+        $themeAdmin->assignRole(RolesEnum::ADMIN->value);
 
         $campaignLeader = User::factory()->create([
             'username' => 'campaignAdmin',
             'email' => 'campaignAdmin@example.com',
             'password' => bcrypt('campaignAdminpass')
         ]);
-        $campaignLeader->assignRole('campaign_leader');
+        $campaignLeader->assignRole(RolesEnum::CAMPAIGN_LEADER->value);
 
         $worker = User::factory()->create([
             'username' => 'worker',
             'email' => 'worker@example.com',
             'password' => bcrypt('workerpass')
         ]);
-        $worker->assignRole('worker');
+        $worker->assignRole(RolesEnum::WORKER->value);
 
         $coordinator = User::factory()->create([
             'username' => 'coordinator',
             'email' => 'coordinator@example.com',
             'password' => bcrypt('coordinatorpass')
         ]);
-        $coordinator->assignRole('coordinator');
+        $coordinator->assignRole(RolesEnum::COORDINATOR->value);
+
+        $requestor = User::factory()->create([
+            'username' => 'requestor',
+            'email' => 'requestor@example.com',
+            'password' => bcrypt('requestorpass')
+        ]);
+        $requestor->assignRole(RolesEnum::WORKER->value);
     }
 }

@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
             InformationSourcesSeeder::class,
             TargetDemographicsSeeder::class,
             CampaignUserSeeder::class,
+            ActivityRequestSeeder::class
         ]);
     }
 }

@@ -178,7 +178,7 @@ class ActivityController extends Controller
 
         $activity->delete();
 
-        return redirect()->back();
+        return redirect()->route('activities.index');
     }
 
     public function assignUsers(Request $request, Activity $activity)
