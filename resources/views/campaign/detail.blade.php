@@ -53,7 +53,13 @@
                     {{ $campaign->user->username }}
                 </div>
             </div>
-
+            <!-- Success rate-->
+            <div>
+                <label class="font-semibold text-lg px-5 py-4s">Success rate:</label>
+                <div class="px-5 py-4s mb-4 text-blacks">
+                    {{ $campaign->getSuccessRateAttribute()}}%
+                </div>
+            </div>
             <!-- Steps table-->
             <div class="flex font-semibold text-lg px-5 text-black mb-4">
                 Steps:
@@ -93,7 +99,7 @@
                                 {{ $step->created_at->format('Y-m-d')}}
                             </td>
                             <td class="p-2 border border-background-dark text-center">
-                                {{ $step->getSuccessRateAttribute()*100 }}%
+                                {{ $step->getSuccessRateAttribute() }}%
                             </td>   
                         </tr>
                         @endcan

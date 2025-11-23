@@ -49,9 +49,10 @@
             <!-- Campaign  -->
             <label class="font-semibold text-lg px-5 mb-2">From Campaign:</label>
             <div class="px-5 mb-4">
-                <div>
+                <a href="{{ route('campaigns.show', $step->campaign) }}" 
+                    class="font-semibold py-1 hover:underline text-primary">
                     {{ $step->campaign->name }}
-                </div>
+                 </a>
             </div> 
 
             <!-- Assigned Coordinator-->
@@ -59,6 +60,13 @@
                 <label class="font-semibold text-lg px-5 py-4s">Assigned Coordinator:</label>
                 <div class="px-5 py-4s mb-4">
                     {{ $step->user->username }}
+                </div>
+            </div>
+            <!-- Success rate-->
+            <div>
+                <label class="font-semibold text-lg px-5 py-4s">Success rate:</label>
+                <div class="px-5 py-4s mb-4 text-blacks">
+                    {{ $step->getSuccessRateAttribute()}}%
                 </div>
             </div>
 
@@ -94,7 +102,7 @@
                                 {{ $activity->created_at->format('Y-m-d')}}
                             </td>
                             <td class="p-2 border border-background-dark text-center">
-                                {{ $activity->getSuccessRateAttribute()*100 }}%
+                                {{ $activity->getSuccessRateAttribute()}}%
                             </td>
                         </tr>
                         @endcan

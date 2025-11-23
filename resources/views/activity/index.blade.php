@@ -69,7 +69,7 @@
                                 {{ $activity->created_at->format('Y-m-d')}}
                             </td>
                             <td class="p-2 border border-background-dark text-center">
-                                {{ $activity    ->getSuccessRateAttribute()*100 }}%
+                                {{ $activity->getSuccessRateAttribute() }}%
                             </td>
                             @can('update', $activity)
                             <td class="p-2 border font-bold text-primary border-background-dark text-center">
@@ -135,7 +135,7 @@
                                 {{ $activity->created_at->format('Y-m-d')}}
                             </td>
                             <td class="p-2 border border-background-dark text-center">
-                                {{ $activity    ->getSuccessRateAttribute()*100 }}%
+                                {{ $activity    ->getSuccessRateAttribute() }}%
                             </td>
                         </tr>
                         @endcan

@@ -59,7 +59,7 @@
                                 {{ $campaign->created_at->format('Y-m-d')}}
                             </td>
                             <td class="p-2 border border-background-dark text-center">
-                                {{ $campaign->getSuccessRateAttribute()*100 }}%
+                                {{ $campaign->getSuccessRateAttribute()}}%
                             </td>
                         </tr>
                         @endcan

@@ -14,10 +14,10 @@ class TargetDemographicController extends Controller
      */
     public function index()
     {
-        $this->authorize('list', TargetDemographic::class);
+        $this->authorize('viewAny', TargetDemographic::class);
 
         $demos = TargetDemographic::all();
-        return view('targetDemographics.index', ['targetDemographics' => $demos]);
+        return view('target-demographic.index', ['targetDemographics' => $demos]);
     }
 
     /**
@@ -48,7 +48,7 @@ class TargetDemographicController extends Controller
 
         TargetDemographic::create($targetDemographic);
 
-        return redirect('/targetDemographics')->with('success', 'Target demographic created!');
+        return redirect('/targetDemographics');
     }
 
     /**
@@ -89,7 +89,7 @@ class TargetDemographicController extends Controller
 
         $targetDemographic->update($validated);
 
-        return redirect('/targetDemographics')->with('success', 'Target demographic updated!');
+        return view('target-demographic.detail', compact('targetDemographic'));
     }
 
     /**
@@ -101,6 +101,6 @@ class TargetDemographicController extends Controller
 
         $targetDemographic->delete();
 
-        return redirect('/targetDemographics')->with('success', 'Target demographic deleted!');
+        return redirect('/targetDemographics');
     }
 }

@@ -17,8 +17,7 @@ class AreaOfInterestController extends Controller
      */
     public function index()
     {
-        $this->authorize(PermissionsEnum::VIEW_AREAS_OF_INTEREST->value, AreaOfInterest::class);
-
+        $this->authorize('viewAny', AreaOfInterest::class);
         $areas = AreaOfInterest::all();
         return view('areaofinterest.index', ['areas' => $areas]);
     }
@@ -28,7 +27,7 @@ class AreaOfInterestController extends Controller
      */
     public function create()
     {
-        $this->authorize(PermissionsEnum::CREATE_AREAS_OF_INTEREST->value, AreaOfInterest::class);
+       $this->authorize('create', AreaOfInterest::class);
 
         return view('areaofinterest.create');
     }
@@ -38,7 +37,7 @@ class AreaOfInterestController extends Controller
      */
     public function store(Request $request)
     {
-        $this->authorize(PermissionsEnum::CREATE_AREAS_OF_INTEREST->value, AreaOfInterest::class);
+        $this->authorize('create', AreaOfInterest::class);
 
         $areaOfInterest = $request->validate([
             'name' => ['required','string'],
@@ -48,35 +47,34 @@ class AreaOfInterestController extends Controller
 
         AreaOfInterest::create($areaOfInterest);
 
-        return redirect('/areasOfInterest')->with('success', 'Activity created!');
+        return redirect('/areasOfInterest');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(AreaOfInterest $areaOfInterest)
+    public function show(AreaOfInterest $areasOfInterest)
     {
-        $this->authorize(PermissionsEnum::VIEW_AREAS_OF_INTEREST->value, AreaOfInterest::class);
-
-        return view('areaofinterest.detail', compact('areaOfInterest'));
+        $this->authorize('view', $areasOfInterest);
+        return view('areaofinterest.detail', compact('areasOfInterest'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(AreaOfInterest $areaOfInterest)
+    public function edit(AreaOfInterest $areasOfInterest)
     {
-        $this->authorize(PermissionsEnum::EDIT_AREAS_OF_INTEREST, AreaOfInterest::class);
+        $this->authorize('update', $areasOfInterest);
 
-        return view('areaofinterest.edit', compact('areaOfInterest'));
+        return view('areaofinterest.edit', compact('areasOfInterest'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, AreaOfInterest $areaOfInterest)
+    public function update(Request $request, AreaOfInterest $areasOfInterest)
     {
-        $this->authorize(PermissionsEnum::EDIT_AREAS_OF_INTEREST, $areaOfInterest);
+        $this->authorize('update', $areasOfInterest);
 
         $validated = $request->validate([
             'name' => ['required','string'],
@@ -84,20 +82,20 @@ class AreaOfInterestController extends Controller
             'relevance' => ['string']
         ]);
 
-        $areaOfInterest->update($validated);
+        $areasOfInterest->update($validated);
 
-        return redirect('/areasOfInterest')->with('success', 'Activity updated!');
+        return view('areaofinterest.detail', compact('areasOfInterest'));
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(AreaOfInterest $areaOfInterest)
+    public function destroy(AreaOfInterest $areasOfInterest)
     {
-        $this->authorize(PermissionsEnum::DELETE_AREAS_OF_INTEREST, $areaOfInterest);
+        $this->authorize('delete', $areasOfInterest);
 
-        $areaOfInterest->delete();
+        $areasOfInterest->delete();
 
-        return redirect('/areasOfInterest')->with('success', 'Activity deleted!');
+        return redirect('/areasOfInterest');
     }
 }

@@ -69,7 +69,7 @@
                                 {{ $step->created_at->format('Y-m-d')}}
                             </td>
                             <td class="p-2 border border-background-dark text-center">
-                                {{ $step->getSuccessRateAttribute()*100 }}%
+                                {{ $step->getSuccessRateAttribute() }}%
                             </td>
                         </tr>
                         @endcan
@@ -126,7 +126,7 @@
                                 {{ $step->created_at->format('Y-m-d')}}
                             </td>
                             <td class="p-2 border border-background-dark text-center">
-                                {{ $step->getSuccessRateAttribute()*100 }}%
+                                {{ $step->getSuccessRateAttribute() }}%
                             </td>
                         </tr>
                         @endcan
@@ -183,7 +183,7 @@
                                 {{ $step->created_at->format('Y-m-d')}}
                             </td>
                             <td class="p-2 border border-background-dark text-center">
-                                {{ $step->getSuccessRateAttribute()*100 }}%
+                                {{ $step->getSuccessRateAttribute() }}%
                             </td>
                         </tr>
                         @endcan

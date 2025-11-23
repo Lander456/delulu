@@ -19,7 +19,8 @@ class Step extends Model
         'description',
         'campaign_id',
         'user_id',
-        'order'
+        'order',
+        'success'
     ];
     public function user(): BelongsTo
     {
@@ -40,12 +41,19 @@ class Step extends Model
     }
 
     public function recalculateSuccessRate() {
-        $successValues = $this->activities->pluck('success')->filter();
+        $successValues = $this->activities
+        ->pluck('success')
+        ->filter(fn($v) => !is_null($v));
 
         if ($successValues->isEmpty()) {
-            $this->success = 0;
+            $this->update(['success' => 0]);
+            return;
         }
 
-        $this->success = round($successValues->avg(), 2);
+        $avg = round($successValues->avg(), 2);
+
+        $this->update([
+            'success' => $avg
+        ]);
     }
 }

@@ -25,6 +25,32 @@
                                 </button>
                             </form>
                         </div>
+                    
+                    @elseif($activity->users->contains(auth()->user()) && !optional($activity->users->find(auth()->user()->id))->pivot->completed != null)
+                        <!-- Complete button -->
+                        <div class="flex flex-col  items-center text-black justify-center">
+                            <form action="{{ route('activities.mark', $activity) }}" method="POST">
+                                @csrf
+                                @method('PATCH')
+                                <button type="submit"
+                                        class="flex bg-primary text-white px-4 py-2 rounded hover:bg-primary-highlight">
+                                    Mark as Successful
+                                </button>
+                                <input type="hidden" name="completed" value="1">
+                            </form>
+                        </div>
+                        <!-- Failed button -->
+                        <div class="flex flex-col  items-center text-black justify-center">
+                            <form action="{{ route('activities.mark', $activity) }}" method="POST">
+                                @csrf
+                                @method('PATCH')
+                                <button type="submit"
+                                        class="flex bg-primary text-white px-4 py-2 rounded hover:bg-primary-highlight">
+                                    Mark as Unsuccessful
+                                </button>
+                                <input type="hidden" name="completed" value="0">
+                            </form>
+                        </div>
                     @endif
                     
                     <!-- Edit Button -->
@@ -78,10 +104,17 @@
                     
                 </div>
             </div>
+            <!-- Success rate-->
+            <div>
+                <label class="font-semibold text-lg px-5 py-4s">Success rate:</label>
+                <div class="px-5 py-4s mb-4 text-blacks">
+                    {{ $activity->getSuccessRateAttribute()}}%
+                </div>
+            </div>
             @endcan
             @can('update', $activity)
             <!-- Assigned Users -->
-            <div x-data="{ open: false }" class="px-5 mb-4">
+            <div x-data="{ open: false }" class="px-5 mb-4 w-2/3">
                 <div class="flex font-semibold text-lg mb-2 text-black">
                     Assigned Users:
                 </div>
@@ -90,11 +123,10 @@
                     <table class="w-full border  border-background-darker border-t-2">
                         <thead class="bg-background-dark">
                             <tr class="border border-background-darker border-t-2 ">
-                                <th class="w-6/10 text-left border border-background-darker p-2 font-semibold">Name</th>
+                                <th class="w-3/10 text-left border border-background-darker p-2 font-semibold">Name</th>
                                 <th class="w-4/10 text-left border border-background-darker p-2 font-semibold">Role</th>
-                                @can('update', $activity)
-                                    <th class="w-1/10 text-left border border-background-darker p-2 font-semibold"></th>
-                                @endcan   
+                                <th class="w-2/10 text-left border border-background-darker p-2 font-semibold">State</th>
+                                <th class="w-1/10 text-left border border-background-darker p-2 font-semibold"></th>
                             </tr>
                         </thead>
                         <tbody >
@@ -109,6 +141,15 @@
                                 </td>
                                 <td class="p-2 border border-background-dark">
                                     {{ $user->role }}
+                                </td>
+                                <td class="p-2 border border-background-dark">
+                                    @if(is_null($user->pivot->completed))
+                                        Not done
+                                    @elseif($user->pivot->completed)
+                                        Success
+                                    @else
+                                        Failed
+                                    @endif
                                 </td>
                                 @can('update', $activity)
                                 <td class="p-2 border font-bold text-primary border-background-dark text-center">
@@ -231,9 +272,6 @@
                                             Reject
                                         </button>
                                     </form>
-                                </td>
-                                <td class="p-2 border font-bold text-primary border-background-dark text-center">
-                                    {{ $request->id }}
                                 </td>
                             </tr>
                             @endforeach

@@ -113,8 +113,11 @@ class CampaignController extends Controller
         ]);
 
         $campaign->update($validated);
+        $assignedUserIds = $campaign->users->pluck('id');
 
-        return view('campaign.detail', compact('campaign'));
+        $users = User::whereNotIn('id', $assignedUserIds)
+            ->get();
+        return view('campaign.detail', compact('campaign', 'users'));
     }
 
     /**

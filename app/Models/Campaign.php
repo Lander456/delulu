@@ -21,6 +21,7 @@ class Campaign extends Model
         'theme_id',
         'user_id',
         'current_step_id',
+        'success'
     ];
 
     public function theme(): BelongsTo
@@ -51,12 +52,19 @@ class Campaign extends Model
 
     public function recalculateSuccessRate()
     {
-        $successValues = $this->steps->pluck('success');
+        $successValues = $this->steps
+        ->pluck('success')
+        ->filter(fn($v) => !is_null($v)); // ignorovat jen null
 
         if ($successValues->isEmpty()) {
-            $this->success = 0;
+            $this->update(['success' => 0]);
+            return;
         }
 
-        $this->success = round($successValues->avg(), 2);
+        $avg = round($successValues->avg(), 2);
+
+        $this->update([
+            'success' => $avg
+        ]);
     }
 }
