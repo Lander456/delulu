@@ -5,10 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\Activity;
 use App\Models\Campaign;
 use App\Models\Step;
+use App\Models\Theme;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use App\Models\User;
+
 
 class CampaignController extends Controller
 {
@@ -75,7 +78,10 @@ class CampaignController extends Controller
     {
         $this->authorize('update', $campaign);
 
-        return view('campaign.edit', compact('campaign'));
+        $users = User::all();
+        $themes = Theme::all();
+        $steps = $campaign->steps;
+        return view('campaign.edit', compact('campaign', 'users', 'themes', 'steps'));
     }
 
     /**
@@ -87,7 +93,7 @@ class CampaignController extends Controller
 
         $validated = $request->validate([
             'name' => ['required', 'string'],
-            'description' => ['string'],
+            'description' => ['nullable','string','max:65535'],
             'theme_id' => ['required', 'exists:themes,id'],
             'user_id' => ['required', 'exists:users,id'],
             'current_step_id' => ['exists:steps,id']
@@ -95,7 +101,7 @@ class CampaignController extends Controller
 
         $campaign->update($validated);
 
-        return redirect('/campaigns')->with('success', 'Campaign updated!');
+        return view('campaign.detail', compact('campaign'));
     }
 
     /**

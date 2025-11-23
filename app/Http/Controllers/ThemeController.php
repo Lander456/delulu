@@ -119,7 +119,7 @@ class ThemeController extends Controller
 
         $theme->delete();
 
-        return redirect('/themes')->with('success', 'Theme deleted!');
+        return redirect('/themes');
     }
 
     public function assignTargetDemographics(Request $request, Theme $theme)
@@ -146,7 +146,7 @@ class ThemeController extends Controller
 
         $theme->targetDemographics()->detach($targetDemographic);
 
-        return back()->with('success', 'Target demographic unassigned from theme!');
+        return back();
     }
 
     public function assignAreasOfInterest(Request $request, Theme $theme)
@@ -163,7 +163,7 @@ class ThemeController extends Controller
         
         $theme->save();
 
-        return back()->with('success', 'Areas of interest assigned to activity!');
+        return back();
     }
 
     public function unassignAreaOfInterest(Theme $theme, AreaOfInterest $areaOfInterest)
@@ -172,7 +172,7 @@ class ThemeController extends Controller
 
         $theme->areasOfInterest()->detach($areaOfInterest);
 
-        return back()->with('success', 'Area of interest unassigned from theme!');
+        return back();
     }
 
     public function assignInformationSources(Request $request, Theme $theme)
@@ -186,11 +186,11 @@ class ThemeController extends Controller
 
         $existingInformationSourceIds = $theme->informationSources()->pluck('information_sources.id')->all();
 
-        $theme->targetDemographics()->sync(array_unique(array_merge($existingInformationSourceIds, $validated['informationSources'])));
+        $theme->informationSources()->sync(array_unique(array_merge($existingInformationSourceIds, $validated['informationSources'])));
 
         $theme->save();
 
-        return back()->with('success', 'Information sources assigned to activity!');
+        return back();
     }
 
     public function unassignInformationSource(Theme $theme, InformationSource $informationSource)
@@ -199,6 +199,6 @@ class ThemeController extends Controller
 
         $theme->informationSources()->detach($informationSource);
 
-        return back()->with('success', 'Information source unassigned from theme!');
+        return back();
     }
 }

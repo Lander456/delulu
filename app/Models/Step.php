@@ -18,7 +18,8 @@ class Step extends Model
         'name',
         'description',
         'campaign_id',
-        'user_id'
+        'user_id',
+        'order'
     ];
     public function user(): BelongsTo
     {

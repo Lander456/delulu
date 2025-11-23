@@ -7,6 +7,7 @@ use Spatie\Permission\Traits\HasRoles;
 use App\Models\Activity;
 use App\Models\Theme;
 use App\Models\User;
+use App\Models\Step;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
@@ -70,7 +71,7 @@ class ActivityController extends Controller
 
         $validated = $request->validate([
             'name' => ['required','string','unique:activities,name'],
-            'description' => ['nullable','string'],
+            'description' => ['nullable','string','max:65535'],
             'step' => ['required','integer','exists:steps,id'],
         ]);
 
@@ -78,13 +79,12 @@ class ActivityController extends Controller
             'name' => $validated['name'],
             'description' => $validated['description'],
         ]);
-
-        $activity->step()->associate($validated['step']);
+        $step = $validated['step'];
+        $activity->step()->associate($step);
         $activity->save();
 
-        $users = User::all();
-
-        return view('activity.detail', compact('activity', 'users'))->with('success', 'Activity created!');
+        return redirect()
+            ->route('steps.show', $step);
     }
 
     /**
@@ -184,14 +184,14 @@ class ActivityController extends Controller
 
         $activity->save();
 
-        return back()->with('success', 'Users assigned to activity!');
+        return back();
     }
 
     public function unassignUser(Activity $activity, User $user)
     {
         $activity->users()->detach($user);
 
-        return back()->with('success', 'User unassigned from activity!');
+        return back();
     }
 
     public function mark(Request $request, Activity $activity)
@@ -202,7 +202,7 @@ class ActivityController extends Controller
 
         $activity->users()->updateExistingPivot(auth()->id(), ['completed' => $request->completed]);
 
-        return back()->with('success', 'Activity completed!');
+        return back();
     }
 
     public function complete(Request $request, Activity $activity)
@@ -217,6 +217,6 @@ class ActivityController extends Controller
             'completed' => $request->boolean('completed')
         ]);
 
-        return back()->with('success', 'Activity completed!');
+        return back();
     }
 }

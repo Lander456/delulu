@@ -18,6 +18,9 @@ class Campaign extends Model
     protected $fillable = [
         'name',
         'description',
+        'theme_id',
+        'user_id',
+        'current_step_id',
     ];
 
     public function theme(): BelongsTo
