@@ -41,7 +41,7 @@ class InformationSourceController extends Controller
 
         $informationSource = $request->validate([
             'name' => ['required','string'],
-            'description' => 'string',
+            'description' => ['nullable','string','max:65535'],
         ]);
 
         InformationSource::create($informationSource);
@@ -78,7 +78,7 @@ class InformationSourceController extends Controller
 
         $validated = $request->validate([
             'name' => ['required','string'],
-            'description' => ['string'],
+            'description' => ['nullable','string','max:65535'],
         ]);
 
         $informationSource->update($validated);

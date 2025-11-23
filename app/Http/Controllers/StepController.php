@@ -21,12 +21,23 @@ class StepController extends Controller
     {
         $this->authorize('viewAny', Step::class);
 
-        $steps = Step::with('activities', 'user')
+        $steps = Step::with('activities', 'user', 'campaign.currentStep')
             ->get()
             ->filter(fn ($step) => Gate::allows('view', $step))
             ->values();
 
-        return view('step.index', compact('steps'));
+        $activeSteps = $steps->filter(fn ($step) =>
+            $step->order === optional($step->campaign->currentStep)->order
+        );
+
+        $completedSteps = $steps->filter(fn ($step) =>
+            $step->order < optional($step->campaign->currentStep)->order
+        );
+
+        $plannedSteps = $steps->filter(fn ($step) =>
+            $step->order > optional($step->campaign->currentStep)->order
+        );
+        return view('step.index', compact('steps', 'activeSteps', 'completedSteps', 'plannedSteps'));
     }
 
     /**
@@ -36,7 +47,12 @@ class StepController extends Controller
     {
         $this->authorize('create', Step::class);
 
-        return view('step.create');
+        $campaigns = Campaign::all()
+            ->filter(fn ($campaign) => Gate::allows('view', $campaign))
+            ->values();
+
+        $users = User::all();
+        return view('step.create', compact('campaigns', 'users'));
     }
 
     /**
@@ -94,7 +110,7 @@ class StepController extends Controller
 
         $validated = $request->validate([
             'name' => ['required','string'],
-            'description' => ['string'],
+            'description' => ['nullable','string','max:65535'],
             'campaign_id' => ['required','exists:campaigns,id'],
             'user_id' => ['required','exists:users,id'],
         ]);

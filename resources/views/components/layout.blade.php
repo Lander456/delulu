@@ -26,23 +26,26 @@
             </div>
             <span class="inline-block w-[2px] h-18 bg-white mx-3"></span>
 
-            <a href="/home" class="px-5 text-xl">Home</a>
+            <a href="/home" class="px-2 text-xl">Home</a>
 
-            @can('viewAny', Activity::class)
-            <a href="{{ route('activities.index') }} " class="px-2 text-xl">Activities</a>
-            @endcan
-
-            @can('viewAny', Step::class)
-            <a href="{{ route('steps.index') }}" class="px-2 text-xl">Steps</a>
+            @can('viewAny', Theme::class)
+            <a href="{{ route('themes.index') }}" class="px-2 text-xl">Themes</a>
             @endcan
 
             @can('viewAny', Campaign::class)
             <a href="{{ route('campaigns.index') }}" class="px-2 text-xl">Campaigns</a>
             @endcan
 
-            @can('viewAny', Theme::class)
-            <a href="{{ route('themes.index') }}" class="px-2 text-xl">Themes</a>
+            @can('viewAny', Step::class)
+            <a href="{{ route('steps.index') }}" class="px-2 text-xl">Steps</a>
             @endcan
+            
+            @can('viewAny', Activity::class)
+            <a href="{{ route('activities.index') }} " class="px-2 text-xl">Activities</a>
+            @endcan
+
+
+
 
         </div>
 

@@ -99,6 +99,22 @@
                 </div>
                 @endif
             </div>
+            @can('create', Campaign::class)
+            <div class="flex justify-between w-full px-5 mb-4">
+                <div>
+                </div>
+                <form action="{{ route('campaigns.store') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="name" value="New Campaign">
+                    <input type="hidden" name="description" value="No description">
+                    <input type="hidden" name="theme_id" value="{{ $theme->id }}">
+                    <input type="hidden" name="user_id" value="{{ $theme->user->id }}">
+                    <button type="submit" class="bg-primary hover:bg-primary-highlight text-white px-2 py-1 rounded cursor-pointer">
+                        Add Campaign
+                    </button>
+                </form>
+            </div>
+            @endcan
 
 
             <!-- Areas of interest -->

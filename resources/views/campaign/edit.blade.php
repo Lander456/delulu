@@ -81,25 +81,28 @@
                             </select>
                         @else
                             {{ $campaign->user->username }}
+                             <input type="hidden" name="user_id" value="{{ $campaign->user->id }}">
                         @endif
                     </div> 
 
                     <!-- Theme  -->
                     <label class="font-semibold text-lg px-5 mb-2">Campaign Theme:</label>
                     <div class="px-5 mb-4">
-                        @if(auth()->user()->hasRole(RolesEnum::SYSADMIN->value))
+                        @if(auth()->user()->hasRole(RolesEnum::SYSADMIN->value) || auth()->user()->hasRole(RolesEnum::ADMIN->value))
                             <select name="theme_id" id="theme_id" 
                                     class="w-1/4 w-min-64 px-4 py-2 bg-background border-background-darker rounded border-2">
                                 @foreach($themes as $theme)
+                                    @can('view', $theme)
                                     <option value="{{ $theme->id }}" 
                                         @selected($campaign->theme->id === $theme->id)>
                                         {{ $theme->name }}
                                     </option>
+                                    @endcan
                                 @endforeach
                             </select>
                         @else
                             <div>
-                                {{ $campaign->theme->username }}
+                                {{ $campaign->theme->name }}
                             </div>
                             <input type="hidden" name="theme_id" value="{{ $campaign->theme->id }}">
                         @endif
@@ -108,6 +111,7 @@
                     <!-- Current step  -->
                     <label class="font-semibold text-lg px-5 mb-2">Current Step:</label>
                     <div class="px-5 mb-4">
+                        @if($steps->isNotEmpty())
                         <select name="current_step_id" id="current_step_id" 
                                     class="w-1/4 w-min-64 px-4 py-2 bg-background border-background-darker rounded border-2">
                                 @foreach($steps as $step)
@@ -117,6 +121,11 @@
                                 </option>
                             @endforeach
                         </select>
+                        @else
+                        <div class="text-background-darker">
+                            Campaing doesnt have any existing steps
+                        </div>
+                        @endif
                     </div> 
                 </div>
             </form>

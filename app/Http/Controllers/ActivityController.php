@@ -58,8 +58,11 @@ class ActivityController extends Controller
     public function create()
     {
         $this->authorize('create', Activity::class);
+        $steps = Step::all()
+            ->filter(fn ($step) => Gate::allows('view', $step))
+            ->values();
 
-        return view('activity.create');
+        return view('activity.create', compact('steps'));
     }
 
     /**
@@ -96,7 +99,10 @@ class ActivityController extends Controller
 
         $assignedUserIds = $activity->users->pluck('id');
 
-        $users = User::whereNotIn('id', $assignedUserIds)->get();
+        $campaignUserIds = $activity->step->campaign->users->pluck('id');
+        $users = User::whereIn('id', $campaignUserIds)
+            ->whereNotIn('id', $assignedUserIds)
+            ->get();
 
         return view('activity.detail', compact('activity', 'users'));
     }
@@ -152,8 +158,15 @@ class ActivityController extends Controller
         }
 
         $activity->save();
-        $users = User::all();
-        return view('activity.detail', compact('activity', 'users'))->with('success', 'Activity updated!');
+
+        $assignedUserIds = $activity->users->pluck('id');
+
+        $campaignUserIds = $activity->step->campaign->users->pluck('id');
+        $users = User::whereIn('id', $campaignUserIds)
+            ->whereNotIn('id', $assignedUserIds)
+            ->get();
+
+        return view('activity.detail', compact('activity', 'users'));
     }
 
     /**
@@ -165,7 +178,7 @@ class ActivityController extends Controller
 
         $activity->delete();
 
-        return redirect()->back()->with('success', 'Activity deleted!');
+        return redirect()->back();
     }
 
     public function assignUsers(Request $request, Activity $activity)

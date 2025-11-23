@@ -1,3 +1,9 @@
+@php
+    use App\Models\Activity;
+    use App\Models\Step;
+    use App\Models\Campaign;
+    use App\Models\Theme;
+@endphp
 <x-layout>
     <x-slot:title>{{ $campaign->name }}</x-slot:title>
     <div class="flex min-h-screen h-full bg-background">
@@ -111,6 +117,9 @@
                             @endif
                         </div>
                 </div>
+                @can('update', $campaign)
+                    @can('create', Step::class)
+
                 <form action="{{ route('steps.store') }}" method="POST">
                     @csrf
                     <input type="hidden" name="name" value="New Step">
@@ -121,7 +130,110 @@
                         Add Step
                     </button>
                 </form>
+                    @endcan
+                @endcan
             </div>
+            
+            @can('update', $campaign)
+             <!-- Assigned Users -->
+            <div x-data="{ open: false }" class="px-5 mb-4">
+                <div class="flex font-semibold text-lg mb-2 text-black">
+                    Assigned Users:
+                </div>
+                <div class="flex mb-4 max-w-300">
+                    @if($campaign->users->isNotEmpty())
+                    <table class="w-full border  border-background-darker border-t-2">
+                        <thead class="bg-background-dark">
+                            <tr class="border border-background-darker border-t-2 ">
+                                <th class="w-6/10 text-left border border-background-darker p-2 font-semibold">Name</th>
+                                <th class="w-4/10 text-left border border-background-darker p-2 font-semibold">Role</th>
+                                <th class="w-1/10 text-left border border-background-darker p-2 font-semibold"></th>
+                            </tr>
+                        </thead>
+                        <tbody >
+                            @foreach($campaign->users as $user)
+                            
+                            <tr>
+                                <td class="p-2 border border-background-dark">
+                                    <a href="{{ route('users.show', $user) }}" 
+                                    class="font-semibold py-1 hover:underline text-primary">
+                                        {{ $user->username }}
+                                    </a>
+                                </td>
+                                <td class="p-2 border border-background-dark">
+                                    {{ $user->role }}
+                                </td>
+                                @can('update', $campaign)
+                                <td class="p-2 border font-bold text-primary border-background-dark text-center">
+                                    <form action="{{ route('campaigns.unassignUser', ['campaign' => $campaign, 'user' => $user]) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit"
+                                                class=" text-center text-primary hover:text-primary-highlight font-bold cursor-pointer">
+                                            Remove
+                                        </button>
+                                    </form>
+                                </td>
+                                @endcan
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                    @else   
+                    <div class="text-background-darker">
+                        none
+                    </div>
+                    @endif
+                </div>
+
+                <!-- Add Assigned Users -->
+                @can('update', $campaign)
+                <button @click="open = !open" class="bg-primary text-white px-4 py-2 rounded hover:bg-primary-highlight">
+                    Assigned Users
+                </button>
+
+                <div x-show="open" x-transition class="mt-4 mb-4">
+                    @if($users->isNotEmpty())
+                    <form action="{{ route('campaigns.assignUsers', $campaign) }}" method="POST">
+                        @csrf
+                        @method('PUT')
+                        
+                        <table class="border w-full max-w-96 border-background-darker border-t-2 mb-4">
+                            <thead class="bg-background-dark">
+                                <tr class="border border-background-darker border-t-2">
+                                    <th class="text-left p-2 border border-background-darker">Name</th>
+                                    <th class="w-4/10 text-left border border-background-darker p-2 font-semibold">Role</th>
+                                    <th class="w-12"></th>
+                                </tr>   
+                            </thead>
+                            <tbody>
+                                @foreach($users as $user)
+                                    <tr class="p-2 border border-background-dark">
+                                        <td class="p-2">{{ $user->username }}</td>
+                                        <td class="p-2 border border-background-dark">
+                                            {{ $user->role }}
+                                        </td>
+                                        <td class="p-2 flex justify-center">
+                                            <input type="checkbox" class="w-4 h-4" name="users[]" value="{{ $user->id }}">
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                        <div class="flex gap-2">
+                            <button type="button" @click="open = false" class="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400">Cancel</button>
+                            <button type="submit" class="bg-primary text-white px-4 py-2 rounded hover:bg-primary-highlight">Confirm Selection</button>
+                        </div>
+                    </form>
+                    @else
+                        <div x-show="open" class="text-background-darker mb-4">
+                            none to add
+                        </div>
+                    @endif
+                </div>
+                @endcan
+            </div>
+            @endcan   
         </div>
         <div class="flex flex-[1] bg-background px-5 py-4 justify-center" >
             

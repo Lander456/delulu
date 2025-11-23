@@ -58,7 +58,7 @@ class ThemeController extends Controller
 
         Theme::create($theme);
 
-        return redirect('/themes')->with('success', 'Theme created!');
+        return redirect('/themes');
     }
 
     /**

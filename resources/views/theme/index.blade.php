@@ -9,9 +9,9 @@
     <x-slot:title>Themes</x-slot:title>
     <div class="flex min-h-screen h-full bg-background">
         <!-- Assigned activities -->
-        <div class = "flex flex-col flex-[4] min-w-64 px-5 py-4  bg-background">
+        <div class = "flex flex-col min-w-64 px-5 py-4  bg-background">
             <div class="flex justify-between">
-                <div class="flex font-semibold text-2xl px-5 py-4 text-black">
+                <div class="flex font-semibold text-3xl px-5 py-4 text-black">
                     Themes
                 </div>
                 <!-- Right Button -->
@@ -45,9 +45,6 @@
                 
                 
             </div>
-        </div>
-        <div class="flex flex-[1] bg-background px-5 py-4 justify-end" >
-
         </div>
     </div>
 </x-layout>

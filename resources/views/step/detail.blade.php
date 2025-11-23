@@ -63,12 +63,12 @@
             </div>
 
             <!-- Activities table-->
-            <div class="flex font-semibold text-lg px-5 text-black mb-4">
-                Steps:
+            <div class="flex font-semibold text-lg px-5  text-black mb-4">
+                Activities: 
             </div>
-            <div class="flex w-full px-5 mb-4">
+            <div class="flex w-full px-5 mb-4 overflow-x-autos">
                 @if($step->activities->isNotEmpty())
-                <table class="w-full border  border-background-darker border-t-2 ">
+                <table class="min-w-full border  border-background-darker border-t-2 ">
                     <thead class="bg-background-dark">
                         <tr class="border border-background-darker border-t-2">
                             <th class="w-3/10 text-left border border-background-darker p-2 font-semibold">Name</th>

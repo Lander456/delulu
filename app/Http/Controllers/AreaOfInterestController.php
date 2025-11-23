@@ -42,7 +42,7 @@ class AreaOfInterestController extends Controller
 
         $areaOfInterest = $request->validate([
             'name' => ['required','string'],
-            'description' => ['string'],
+            'description' => ['nullable','string','max:65535'],
             'relevance' => ['string']
         ]);
 
@@ -80,7 +80,7 @@ class AreaOfInterestController extends Controller
 
         $validated = $request->validate([
             'name' => ['required','string'],
-            'description' => ['string'],
+            'description' => ['nullable','string','max:65535'],
             'relevance' => ['string']
         ]);
 

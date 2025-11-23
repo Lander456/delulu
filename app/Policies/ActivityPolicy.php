@@ -37,6 +37,11 @@ class ActivityPolicy
         if ($activity->users->contains($user)) {
             return true;
         }
+        $campaign = $activity->step->campaign;
+
+        if ($campaign->users->contains($user)) {
+            return true;
+        }
 
         return $user->id == $activity->step->user_id ||
             $user->id == $activity->step->campaign->user_id ||

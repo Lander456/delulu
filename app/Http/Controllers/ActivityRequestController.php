@@ -6,6 +6,7 @@ use App\Models\Activity;
 use App\Models\ActivityRequest;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
+use Illuminate\Notifications\Action;
 
 class ActivityRequestController extends Controller
 {
@@ -16,39 +17,37 @@ class ActivityRequestController extends Controller
 
         $campaign = $activity->step->campaign;
 
-        if (!$campaign->users->contains($user)) {
-            abort(403, 'You are not assigned to this campaign');
-        }
-
         if ($activity->activityRequests()->where('user_id', $user->id)->exists()) {
             return back()->with('error', 'You have already requested to be assigned to this activity');
         }
 
         $activity->activityRequests()->create([
             'user_id' => $user->id,
-            'status' => 'pending'
+            'status' => 'pending',
+            'activity_id' => $activity->id
         ]);
 
-        return back()->with('success', 'Request for assignment submitted successfully');
+        return redirect()->route('activities.show', compact('activity'));
     }
 
-    public function approve(ActivityRequest $request)
+    public function approve(ActivityRequest $activityRequest)
     {
-        $this->authorize('update', $request->activity);
+        $activity = $activityRequest->activity;
+        
 
-        $request->update(['status' => 'approved']);
+        $this->authorize('update', $activity);
 
-        $request->activity->users()->attach($request->user_id);
-
-        return back()->with('success', 'Request approved');
+        $activity->users()->attach($activityRequest->user_id);
+        $activityRequest->delete();
+        return back();
     }
 
-    public function reject(ActivityRequest $request)
+    public function reject(ActivityRequest $activityRequest)
     {
-        $this->authorize('update', $request->activity);
+        $activity = $activityRequest->activity;
+        $this->authorize('update', $activity);
 
-        $request->update(['status' => 'rejected']);
-
-        return back()->with('success', 'Request rejected');
+        $activityRequest->delete();
+        return back();
     }
 }

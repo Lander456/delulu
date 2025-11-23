@@ -40,7 +40,7 @@ class TargetDemographicController extends Controller
         $targetDemographic = $request->validate([
             'name' => ['required','string'],
             'amount' => ['integer'],
-            'description' => ['string'],
+            'description' => ['nullable','string','max:65535'],
             'difficulty' => ['integer'],
             'ethics' => ['string'],
             'relevance' => ['integer']
@@ -81,7 +81,7 @@ class TargetDemographicController extends Controller
         $validated = $request->validate([
             'name' => ['required','string'],
             'amount' => ['integer'],
-            'description' => ['string'],
+            'description' => ['nullable','string','max:65535'],
             'difficulty' => ['integer'],
             'ethics' => ['string'],
             'relevance' => ['integer']

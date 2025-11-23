@@ -14,6 +14,19 @@
                     Activity Overview
                 </div>
                 <div class="flex flex-row gap-4">
+                    <!-- Request Button -->
+                    @if(!$activity->users->contains(auth()->user()) && ! $activity->activityRequests->contains(fn($ar) => $ar->user_id === auth()->id()))
+                        <div class="flex flex-col  items-center text-black justify-center">
+                            <form action="{{ route('activities.request', $activity) }}" method="POST">
+                                @csrf
+                                <button type="submit"
+                                        class="flex bg-primary text-white px-4 py-2 rounded hover:bg-primary-highlight">
+                                    Request to join
+                                </button>
+                            </form>
+                        </div>
+                    @endif
+                    
                     <!-- Edit Button -->
                     @can('update', $activity)
                         <div class="flex flex-col  items-center text-black justify-center">
@@ -53,7 +66,20 @@
                     {{ $activity->step->user->username }}
                 </div>
             </div>
-
+            @can('view', $activity->step)
+            <!-- From step-->
+            <div>
+                <label class="font-semibold text-lg px-5 py-4s">From Step:</label>
+                <div class="px-5 py-4s mb-4">
+                    <a href="{{ route('steps.show', $activity->step) }}" 
+                        class="font-semibold py-1 hover:underline text-primary">
+                            {{ $activity->step->name }}
+                     </a>
+                    
+                </div>
+            </div>
+            @endcan
+            @can('update', $activity)
             <!-- Assigned Users -->
             <div x-data="{ open: false }" class="px-5 mb-4">
                 <div class="flex font-semibold text-lg mb-2 text-black">
@@ -66,12 +92,14 @@
                             <tr class="border border-background-darker border-t-2 ">
                                 <th class="w-6/10 text-left border border-background-darker p-2 font-semibold">Name</th>
                                 <th class="w-4/10 text-left border border-background-darker p-2 font-semibold">Role</th>
-                                <th class="w-1/10 text-left border border-background-darker p-2 font-semibold"></th>
+                                @can('update', $activity)
+                                    <th class="w-1/10 text-left border border-background-darker p-2 font-semibold"></th>
+                                @endcan   
                             </tr>
                         </thead>
                         <tbody >
                             @foreach($activity->users as $user)
-                            @can('view', arguments: $user)
+                            
                             <tr>
                                 <td class="p-2 border border-background-dark">
                                     <a href="{{ route('users.show', $user) }}" 
@@ -82,6 +110,7 @@
                                 <td class="p-2 border border-background-dark">
                                     {{ $user->role }}
                                 </td>
+                                @can('update', $activity)
                                 <td class="p-2 border font-bold text-primary border-background-dark text-center">
                                     <form action="{{ route('activities.unassignUser', ['activity' => $activity->id, 'user' => $user->id]) }}" method="POST">
                                         @csrf
@@ -93,8 +122,8 @@
                                         </button>
                                     </form>
                                 </td>
+                                @endcan
                             </tr>
-                            @endcan
                             @endforeach
                         </tbody>
                     </table>
@@ -106,7 +135,7 @@
                 </div>
 
                 <!-- Add Assigned Users -->
-      
+                @can('update', $activity)
                 <button @click="open = !open" class="bg-primary text-white px-4 py-2 rounded hover:bg-primary-highlight">
                     Assigned Users
                 </button>
@@ -150,6 +179,73 @@
                         </div>
                     @endif
                 </div>
+                @endcan
+            </div>
+
+            
+            <!-- Join Request -->
+            <div x-data="{ open: false }" class="px-5 mb-4">
+                <div class="flex font-semibold text-lg mb-2 text-black">
+                    Requests to join:
+                </div>
+                <div class="flex mb-4 max-w-300">
+                    @if($activity->activityRequests->isNotEmpty())
+                    <table class="w-full border  border-background-darker border-t-2">
+                        <thead class="bg-background-dark">
+                            <tr class="border border-background-darker border-t-2 ">
+                                <th class="w-6/10 text-left border border-background-darker p-2 font-semibold">Name</th>
+                                <th class="w-4/10 text-left border border-background-darker p-2 font-semibold">Role</th>
+                                <th class="w-1/10 text-left border border-background-darker p-2 font-semibold"></th>
+                                 <th class="w-1/10 text-left border border-background-darker p-2 font-semibold"></th>
+                            </tr>   
+                        </thead>
+                        <tbody >
+                            @foreach($activity->activityRequests as $request)
+                            
+                            <tr>
+                                <td class="p-2 border border-background-dark">
+                                    <a href="{{ route('users.show', $request->user) }}" 
+                                    class="font-semibold py-1 hover:underline text-primary">
+                                        {{ $request->user->username }}
+                                    </a>
+                                </td>
+                                <td class="p-2 border border-background-dark">
+                                    {{ $request->user->role }}
+                                </td>
+                                <td class="p-2 border font-bold text-primary border-background-dark text-center">
+                                    <form action="{{ route('activityRequest.approve', ['activityRequest' => $request->id]) }}" method="POST">
+                                        @csrf   
+                                        @method('PATCH')
+                                        <button type="submit"
+                                                class=" text-center text-primary hover:text-primary-highlight font-bold cursor-pointer">
+                                            Approve
+                                        </button>
+                                    </form>
+                                </td>
+                                <td class="p-2 border font-bold text-primary border-background-dark text-center">
+                                    <form action="{{ route('activityRequest.reject', ['activityRequest' => $request->id]) }}" method="POST">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit"
+                                                class=" text-center text-primary hover:text-primary-highlight font-bold cursor-pointer">
+                                            Reject
+                                        </button>
+                                    </form>
+                                </td>
+                                <td class="p-2 border font-bold text-primary border-background-dark text-center">
+                                    {{ $request->id }}
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                    @else   
+                    <div class="text-background-darker">
+                        none
+                    </div>
+                    @endif
+                </div>
+                @endcan
             </div>
         </div>
         <div class="flex flex-[1] bg-background px-5 py-4 justify-center" >
