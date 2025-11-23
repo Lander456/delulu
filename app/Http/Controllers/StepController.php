@@ -45,14 +45,19 @@ class StepController extends Controller
     {
         $this->authorize('create', Step::class);
 
-        $step = $request->validate([
+        $validated = $request->validate([
             'name' => ['required','string'],
             'description' => ['string'],
             'campaign_id' => ['required','exists:campaigns,id'],
-            'user_id' => ['required','exists:users,id'],
+            'user_id' => ['required','exists:users,id']
         ]);
 
-        Step::create($step);
+        $maxOrder = Step::where('campaign_id', $validated['campaign_id'])
+            ->max('order');
+
+        $validated['order'] = $maxOrder ? $maxOrder + 1 : 0;
+
+        Step::create($validated);
 
         return redirect('/steps')->with('success', 'Step created!');
     }
