@@ -3,6 +3,8 @@
     use App\Models\Step;
     use App\Models\Campaign;
     use App\Models\Theme;
+
+    $userPivot = optional($activity->users->find(auth()->user()->id))->pivot;
 @endphp
 <x-slot:title>{{ $activity->name }}</x-slot:title>
 <x-layout>
@@ -14,6 +16,7 @@
                     Activity Overview
                 </div>
                 <div class="flex flex-row gap-4">
+
                     <!-- Request Button -->
                     @if(!$activity->users->contains(auth()->user()) && ! $activity->activityRequests->contains(fn($ar) => $ar->user_id === auth()->id()))
                         <div class="flex flex-col  items-center text-black justify-center">
@@ -26,7 +29,7 @@
                             </form>
                         </div>
                     
-                    @elseif($activity->users->contains(auth()->user()) && !optional($activity->users->find(auth()->user()->id))->pivot->completed != null)
+                    @elseif($userPivot && $userPivot->completed === null)
                         <!-- Complete button -->
                         <div class="flex flex-col  items-center text-black justify-center">
                             <form action="{{ route('activities.mark', $activity) }}" method="POST">
@@ -39,6 +42,7 @@
                                 <input type="hidden" name="completed" value="1">
                             </form>
                         </div>
+                        
                         <!-- Failed button -->
                         <div class="flex flex-col  items-center text-black justify-center">
                             <form action="{{ route('activities.mark', $activity) }}" method="POST">

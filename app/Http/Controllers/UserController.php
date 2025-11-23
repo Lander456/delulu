@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\AreaOfInterest;
 use App\Models\TargetDemographic;
 use App\Models\User;
+use App\Enums\RolesEnum;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -154,4 +155,15 @@ class UserController extends Controller
 
         return back();
     }
+
+    public function assignRole(Request $request, User $user)
+{
+    $this->authorize('update', $user);
+
+    $role = RolesEnum::from($request->role);
+
+    $user->syncRoles([$role->value]);
+
+    return back();
+}
 }

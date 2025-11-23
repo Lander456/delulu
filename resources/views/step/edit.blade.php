@@ -23,7 +23,7 @@
                         @can('update', $step)
                             <div class="flex flex-col  items-center w-32 text-black justify-center">
                                 
-                                <button type="submit" class="flex bg-primary text-white px-4 py-2 rounded hover:bg-primary-highlight">
+                                <button type="submit" class="flex    text-white px-4 py-2 rounded hover:bg-primary-highlight">
                                     Save
                                 </button>
                             </div>

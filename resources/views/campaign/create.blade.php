@@ -37,6 +37,7 @@
                 id="name"
                 placeholder="Campaigns name"
                 required
+                value="{{ old('name') }}"
                 class="w-1/2 w-min-64 flex font-semibold text-2xl px-5 py-2 mb-4 text-black bg-background focus:outline-none 
                 focus:ring-2 focus:ring-primary border-background-darker border-2 rounded
                 input @error('name') input-error @enderror">
@@ -67,14 +68,21 @@
             @if($themes->isNotEmpty())
             <div class="px-5">
                 <select name="theme_id" id="theme_id" 
-                        class="w-1/4 w-min-64 px-4 py-2 bg-background border-background-darker rounded border-2">
+                        class="w-1/4 w-min-64 px-4 py-2 bg-background border-background-darker rounded border-2"
+                        @error('theme_id') border-red-600 @enderror>
                     @foreach($themes as $theme)
+                        @can('view', $theme)
                         <option value="{{ $theme->id }}">
                             {{ $theme->name }}
                         </option>
+                        @endcan
                     @endforeach
                 </select>
+                @error('theme_id')
+                    <span class="text-error text-red-600 text-sm">{{ $message }}</span>
+                @enderror
             </div>
+
             @endif        
             
             <!-- Assigned Coordinator -->

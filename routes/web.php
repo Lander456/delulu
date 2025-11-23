@@ -12,6 +12,7 @@ use App\Http\Controllers\StepController;
 use App\Http\Controllers\ThemeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AreaOfInterestController;
+use App\Http\Controllers\Controller;
 use App\Http\Controllers\TargetDemographicController;
 use App\Http\Controllers\InformationSourceController;
 use App\Models\Activity;
@@ -78,6 +79,9 @@ Route::middleware('auth')->group(function (){
 
     Route::delete('users/{user}/AreasOfInterest/{areaOfInterest}', [UserController::class, 'unassignAreaOfInterest'])->name('users.unassignAreaOfInterest');
 
+    Route::patch('users/{user}/AddRole', [UserController::class, 'assignRole'])
+    ->name('users.assignRole');
+   
     Route::resource('users', controller: UserController::class);
 
     Route::resource('areasOfInterest', AreaOfInterestController::class);

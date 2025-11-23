@@ -124,9 +124,7 @@
                         none
                     </div>
                     @endif
-                </div>
-
-               
+                </div>       
         <div class="flex flex-[1] bg-background px-5 py-4 justify-center" >
             
         </div>

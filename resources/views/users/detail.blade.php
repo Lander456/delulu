@@ -4,6 +4,8 @@
     use App\Models\Step;
     use App\Models\Campaign;
     use App\Models\Theme;
+    use App\Enums\RolesEnum;
+
 @endphp
 <x-layout>
     <x-slot:title>{{ $user->username }}</x-slot:title>
@@ -52,6 +54,35 @@
             <div class="flex font-semibold text-md px-5 text-black mb-10">
                 Email: <span class="flex font-normal text-md px-5 text-black ">{{ $user->email }}</span>
             </div>
+
+            @if( $user->id != auth()->user()->id &&  
+                    (auth()->user()->hasRole(RolesEnum::SYSADMIN->value) 
+                    || auth()->user()->hasRole(RolesEnum::ADMIN->value) ))
+            <label class="font-semibold text-lg px-5 mb-2">Change role:</label>
+            <div class="px-5 mb-4">
+                <form action="{{ route('users.assignRole', $user) }}" method="POST">
+                    @csrf
+                    @method('PATCH')
+
+                    <select name="role" class="w-1/4 w-min-64 px-4 py-2 bg-background border-background-darker rounded border-2">
+                        @foreach(RolesEnum::cases() as $role)
+                            @if(auth()->user()->hasRole(RolesEnum::ADMIN->value) && $role->value == RolesEnum::SYSADMIN->value)
+                                @continue
+                            @endif
+                            <option value="{{ $role->value }}"
+                                @if($user->hasRole($role->value)) selected @endif>
+                                {{ $role->value}}
+                            </option>
+                        @endforeach
+                    </select>
+
+                    <button type="submit" class="bg-primary text-white px-3 py-1 rounded hover:bg-primary-highlight cursor-pointer">
+                        Change role
+                    </button>
+                </form>
+            </div>
+            @endif
+
 
             @if($user->getCampaigns()->isNotEmpty())
             <!-- Campaing table-->

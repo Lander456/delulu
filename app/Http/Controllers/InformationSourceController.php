@@ -6,6 +6,7 @@ use App\Models\InformationSource;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\TargetDemographic;
 
 
 class InformationSourceController extends Controller
@@ -97,5 +98,32 @@ class InformationSourceController extends Controller
         $informationSource->delete();
 
         return redirect('/informationSources');
+    }
+
+    public function assignTargetDemographics(Request $request, InformationSource $informationSource)
+    {
+        $this->authorize('update', $informationSource);
+
+        $validated = $request->validate([
+            'targetDemographics' => ['required','array'],
+            'targetDemographics.*' => ['exists:target_demographics,id'],
+        ]);
+
+        $existingTargetDemoIds = $informationSource->targetDemographics()->pluck('target_demographics.id')->all();
+
+        $informationSource->targetDemographics()->sync(array_unique(array_merge($existingTargetDemoIds, $validated['targetDemographics'])));
+
+        $informationSource->save();
+
+        return back();
+    }
+
+    public function unassignTargetDemographic(InformationSource $informationSource, TargetDemographic $targetDemographic)
+    {
+        $this->authorize('update', $informationSource);
+
+        $informationSource->targetDemographics()->detach($targetDemographic);
+
+        return back();
     }
 }
