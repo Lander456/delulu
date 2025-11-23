@@ -22,8 +22,6 @@ return new class extends Migration
                 ->default(0);
             $table->string('ethics')
                 ->nullable();
-            $table->float('relevance')
-                ->default(0);
             $table->timestamps();
         });
     }

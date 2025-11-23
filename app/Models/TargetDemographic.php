@@ -17,8 +17,7 @@ class TargetDemographic extends Model
         'description',
         'amount',
         'difficulty',
-        'ethics',
-        'relevance',
+        'ethics'
     ];
     public function users(): BelongsToMany
     {
