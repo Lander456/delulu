@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\InformationSource;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
+use App\Models\User;
 
 
 class InformationSourceController extends Controller
@@ -15,10 +16,10 @@ class InformationSourceController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-    {
+    {   
 
         $sources = InformationSource::all();
-        return view('informationSource.index', ['informationSource' => $sources]);
+        return view('informationSource.index', ['sources' => $sources]);
 
     }
 
@@ -41,12 +42,12 @@ class InformationSourceController extends Controller
 
         $informationSource = $request->validate([
             'name' => ['required','string'],
-            'description' => 'string',
+            'description' => ['nullable','string','max:65535'],
         ]);
 
         InformationSource::create($informationSource);
 
-        return redirect('/informationsources')->with('success', 'Information source added!');
+        return redirect('/informationSources');
     }
 
     /**
@@ -65,8 +66,8 @@ class InformationSourceController extends Controller
     public function edit(InformationSource $informationSource)
     {
         $this->authorize('update', $informationSource);
-
-        return view('informationSource.edit', compact('informationSource'));
+        $users = User::all();
+        return view('informationSource.edit', compact('informationSource', 'users'));
     }
 
     /**
@@ -78,12 +79,12 @@ class InformationSourceController extends Controller
 
         $validated = $request->validate([
             'name' => ['required','string'],
-            'description' => ['string'],
+            'description' => ['nullable','string','max:65535'],
         ]);
 
         $informationSource->update($validated);
 
-        return redirect('/informationsources')->with('success', 'Information source updated!');
+        return view('informationSource.detail', compact('informationSource'));
     }
 
     /**
@@ -94,5 +95,7 @@ class InformationSourceController extends Controller
         $this->authorize('delete', $informationSource);
 
         $informationSource->delete();
+
+        return redirect('/informationSources');
     }
 }

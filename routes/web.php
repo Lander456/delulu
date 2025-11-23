@@ -29,18 +29,19 @@ Route::middleware('auth')->group(function (){
 
     Route::put('/activities/{activity}/users', [ActivityController::class, 'assignUsers'])->name('activities.assignUsers');
 
-    Route::delete('/activities/{activity}/users/{user}', [ActivityController::class, 'unassignUser'])->name('activities.unassignUser');
+    Route::delete('/activities/{activity}/users/{user}', action: [ActivityController::class, 'unassignUser'])->name('activities.unassignUser');
 
     Route::patch('/activities/{activity}/complete', [ActivityController::class, 'complete'])->name('activities.complete')->middleware('auth');
 
-    Route::post('/activities/{activity}/requests', [ActivityRequestController::class, 'storeRequest'])->name('activities.request')->middleware('auth');
+    Route::patch('/activities/{activity}/mark', [ActivityController::class, 'mark'])->name('activities.mark');
 
-    Route::patch('/activities/{activity}/requests/{request}/approve', [ActivityRequestController::class, 'approve'])->name('activities.requests.approve')->middleware('auth');
+    Route::post('/activities/{activity}/request', [ActivityRequestController::class, 'storeRequest'])->name('activities.request')->middleware('auth');
 
-    Route::patch('/activities/{activity}/requests/{request}/reject', [ActivityRequestController::class, 'reject'])->name('activities.requests.reject')->middleware('auth');
+    Route::patch('/activities/{activityRequest}/approve', [activityRequestController::class, 'approve'])->name('activityRequest.approve')->middleware('auth');
 
+    Route::patch('/activities/{activityRequest}/reject', [activityRequestController::class, 'reject'])->name('activityRequest.reject')->middleware('auth');
+    
     Route::resource('activities', ActivityController::class);
-
 
     Route::resource('steps', StepController::class);
 
@@ -52,6 +53,8 @@ Route::middleware('auth')->group(function (){
     Route::put('/campaigns/{campaign}/users', [CampaignUserController::class, 'assignUsers'])->name('campaigns.assignUsers');
 
     Route::resource('campaigns', CampaignController::class);
+
+    Route::delete('/campaigns/{campaign}/users/{user}', [CampaignUserController::class, 'unassignUser'])->name('campaigns.unassignUser');
 
     Route::put('/themes/{theme}/TargetDemographics', [ThemeController::class, 'assignTargetDemographics'])->name('themes.assignTargetDemographics');
 
@@ -66,6 +69,14 @@ Route::middleware('auth')->group(function (){
     Route::delete('/themes/{theme}/InformationSources/{informationSource}', [ThemeController::class, 'unassignInformationSource'])->name('themes.unassignInformationSource');
 
     Route::resource('themes', ThemeController::class);
+
+    Route::put('/users/{user}/TargetDemographics', [UserController::class, 'assignTargetDemographics'])->name('users.assignTargetDemographics');
+
+    Route::put('users/{user}/AreasOfInterest', [UserController::class, 'assignAreasOfInterest'])->name('users.assignAreasOfInterest');
+
+    Route::delete('users/{user}/TargetDemographics/{targetDemographic}', [UserController::class, 'unassignTargetDemographic'])->name('users.unassignTargetDemographic');
+
+    Route::delete('users/{user}/AreasOfInterest/{areaOfInterest}', [UserController::class, 'unassignAreaOfInterest'])->name('users.unassignAreaOfInterest');
 
     Route::resource('users', controller: UserController::class);
 

@@ -14,7 +14,7 @@
         <!-- Assigned activities -->
         <div class = "flex flex-col flex-[3] min-w-64 px-5 py-4  bg-background">
             <div class="flex font-semibold text-2xl px-5 py-4 text-black">
-                My Activities
+                Assigned Activities
             </div>
             <hr class="border-background-darker border-t-2">
 

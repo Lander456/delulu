@@ -39,7 +39,8 @@ class ThemeController extends Controller
     {
         $this->authorize('create', Theme::class);
 
-        return view('theme.create');
+        $users = User::all();
+        return view('theme.create', compact( 'users'));
     }
 
     /**
@@ -51,12 +52,13 @@ class ThemeController extends Controller
 
         $theme = $request->validate([
             'name' => ['required','string'],
-            'description' => ['string','nullable']
+            'description' => ['nullable','string','max:65535'],
+            'user_id' => ['nullable','exists:users,id']
         ]);
 
         Theme::create($theme);
 
-        return redirect('/themes')->with('success', 'Theme created!');
+        return redirect('/themes');
     }
 
     /**
@@ -66,7 +68,11 @@ class ThemeController extends Controller
     {
         $this->authorize('view', $theme);
 
-        return view('theme.detail', compact('theme'));
+        $areasOfInterest = AreaOfInterest::whereNotIn('id', $theme->areasOfInterest->pluck('id'))->get();
+        $targetDemographics = TargetDemographic::whereNotIn('id', $theme->targetDemographics->pluck('id'))->get();
+        $informationSources = InformationSource::whereNotIn('id', $theme->informationSources->pluck('id'))->get();
+        return view('theme.detail', 
+        compact('theme', 'areasOfInterest', 'targetDemographics', 'informationSources'));
     }
 
     /**
@@ -75,9 +81,11 @@ class ThemeController extends Controller
     public function edit(Theme $theme)
     {
         $this->authorize('update', $theme);
-
+        $areasOfInterest = AreaOfInterest::whereNotIn('id', $theme->areasOfInterest->pluck('id'))->get();
+        $targetDemographics = TargetDemographic::whereNotIn('id', $theme->targetDemographics->pluck('id'))->get();
+        $informationSources = InformationSource::whereNotIn('id', $theme->informationSources->pluck('id'))->get();
         $users = User::all();
-        return view('theme.edit', compact('theme', 'users'));
+        return view('theme.edit', compact('theme', 'users', 'areasOfInterest', 'targetDemographics', 'informationSources'));
     }
 
     /**
@@ -89,12 +97,17 @@ class ThemeController extends Controller
 
         $validated = $request->validate([
             'name' => ['required','string'],
-            'description' => ['string','nullable']
+            'description' => ['nullable','string','max:65535'],
+            'user_id' => ['nullable','exists:users,id']
         ]);
+
+        $areasOfInterest = AreaOfInterest::whereNotIn('id', $theme->areasOfInterest->pluck('id'))->get();
+        $targetDemographics = TargetDemographic::whereNotIn('id', $theme->targetDemographics->pluck('id'))->get();
+        $informationSources = InformationSource::whereNotIn('id', $theme->informationSources->pluck('id'))->get();
 
         $theme->update($validated);
 
-        return view('theme.detail', compact('theme'));
+        return view('theme.detail', compact('theme', 'areasOfInterest', 'targetDemographics', 'informationSources'));
     }
 
     /**
@@ -106,7 +119,7 @@ class ThemeController extends Controller
 
         $theme->delete();
 
-        return redirect('/themes')->with('success', 'Theme deleted!');
+        return redirect('/themes');
     }
 
     public function assignTargetDemographics(Request $request, Theme $theme)
@@ -133,7 +146,7 @@ class ThemeController extends Controller
 
         $theme->targetDemographics()->detach($targetDemographic);
 
-        return back()->with('success', 'Target demographic unassigned from theme!');
+        return back();
     }
 
     public function assignAreasOfInterest(Request $request, Theme $theme)
@@ -145,13 +158,12 @@ class ThemeController extends Controller
             'areasOfInterest.*' => ['exists:area_of_interests,id'],
         ]);
 
-        $existingAreaOfInterestIds = $theme->areasOfInterest()->pluck('area_if_interests.id')->all();
-
-        $theme->targetDemographics()->sync(array_unique(array_merge($existingAreaOfInterestIds, $validated['targetDemographics'])));
-
+        $existingAreaOfInterestIds = $theme->areasOfInterest()->pluck('area_of_interests.id')->all();
+        $theme->areasOfInterest()->sync(array_unique(array_merge($existingAreaOfInterestIds, $validated['areasOfInterest'])));
+        
         $theme->save();
 
-        return back()->with('success', 'Areas of interest assigned to activity!');
+        return back();
     }
 
     public function unassignAreaOfInterest(Theme $theme, AreaOfInterest $areaOfInterest)
@@ -160,7 +172,7 @@ class ThemeController extends Controller
 
         $theme->areasOfInterest()->detach($areaOfInterest);
 
-        return back()->with('success', 'Area of interest unassigned from theme!');
+        return back();
     }
 
     public function assignInformationSources(Request $request, Theme $theme)
@@ -174,11 +186,11 @@ class ThemeController extends Controller
 
         $existingInformationSourceIds = $theme->informationSources()->pluck('information_sources.id')->all();
 
-        $theme->targetDemographics()->sync(array_unique(array_merge($existingInformationSourceIds, $validated['informationSources'])));
+        $theme->informationSources()->sync(array_unique(array_merge($existingInformationSourceIds, $validated['informationSources'])));
 
         $theme->save();
 
-        return back()->with('success', 'Information sources assigned to activity!');
+        return back();
     }
 
     public function unassignInformationSource(Theme $theme, InformationSource $informationSource)
@@ -187,6 +199,6 @@ class ThemeController extends Controller
 
         $theme->informationSources()->detach($informationSource);
 
-        return back()->with('success', 'Information source unassigned from theme!');
+        return back();
     }
 }

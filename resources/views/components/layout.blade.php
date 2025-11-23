@@ -3,6 +3,10 @@
     use App\Models\Step;
     use App\Models\Campaign;
     use App\Models\Theme;
+    use App\Models\User;
+    use App\Models\AreaOfInterest;
+    use App\Models\TargetDemographic;
+    use App\Models\InformationSource;
 @endphp
 
 <!DOCTYPE html>
@@ -26,23 +30,39 @@
             </div>
             <span class="inline-block w-[2px] h-18 bg-white mx-3"></span>
 
-            <a href="/home" class="px-5 text-xl">Home</a>
-
-            @can('viewAny', Activity::class)
-            <a href="{{ route('activities.index') }} " class="px-2 text-xl">Activities</a>
-            @endcan
-
-            @can('viewAny', Step::class)
-            <a href="{{ route('steps.index') }}" class="px-2 text-xl">Steps</a>
-            @endcan
-
-            @can('viewAny', Campaign::class)
-            <a href="{{ route('campaigns.index') }}" class="px-2 text-xl">Campaigns</a>
+            <a href="/home" class="px-2 text-lg">Home</a>
+            
+            @can('viewAny', User::class)
+            <a href="{{ route('users.index') }} " class="px-2 text-lg">Users</a>
             @endcan
 
             @can('viewAny', Theme::class)
-            <a href="{{ route('themes.index') }}" class="px-2 text-xl">Themes</a>
+            <a href="{{ route('themes.index') }}" class="px-2 text-lg">Themes</a>
             @endcan
+            
+            @can('viewAny', Campaign::class)
+            <a href="{{ route('campaigns.index') }}" class="px-2 text-lg">Campaigns</a>
+            @endcan
+            
+            @can('viewAny', Step::class)
+            <a href="{{ route('steps.index') }}" class="px-2 text-lg">Steps</a>
+            @endcan
+            
+            @can('viewAny', Activity::class)
+            <a href="{{ route('activities.index') }} " class="px-2 text-lg">Activities</a>
+            @endcan
+            
+            @can('viewAny', AreaOfInterest::class)
+            <a href="{{ route('areasOfInterest.index') }}" class="px-2 text-lg">Areas of Interest</a>
+            @endcan
+            @can('viewAny', TargetDemographic::class)
+            <a href="{{ route('targetDemographics.index') }}" class="px-2 text-lg">Target demographics</a>
+            @endcan
+            @can('viewAny', InformationSource::class)
+            <a href="{{ route('informationSources.index') }}" class="px-2 text-lg">Information Sources</a>
+            @endcan
+
+            
 
         </div>
 
@@ -52,7 +72,10 @@
            
             
             @if(Auth::check())
-                <span>{{ Auth::user()->username }}</span>
+                <a href="{{ route('users.show', auth()->user()) }}" 
+                class="font-semibold text-white py-1 hover:underline hover:text-background">
+                    {{ auth()->user()->username }}
+                </a>
             @else
                 <span>Nejste přihlášen</span>
             @endif

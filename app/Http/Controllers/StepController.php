@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Activity;
 use App\Models\Step;
 use App\Models\User;
+use App\Models\Campaign;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -20,12 +21,23 @@ class StepController extends Controller
     {
         $this->authorize('viewAny', Step::class);
 
-        $steps = Step::with('activities', 'user')
+        $steps = Step::with('activities', 'user', 'campaign.currentStep')
             ->get()
             ->filter(fn ($step) => Gate::allows('view', $step))
             ->values();
 
-        return view('step.index', compact('steps'));
+        $activeSteps = $steps->filter(fn ($step) =>
+            $step->order === optional($step->campaign->currentStep)->order
+        );
+
+        $completedSteps = $steps->filter(fn ($step) =>
+            $step->order < optional($step->campaign->currentStep)->order
+        );
+
+        $plannedSteps = $steps->filter(fn ($step) =>
+            $step->order > optional($step->campaign->currentStep)->order
+        );
+        return view('step.index', compact('steps', 'activeSteps', 'completedSteps', 'plannedSteps'));
     }
 
     /**
@@ -35,7 +47,12 @@ class StepController extends Controller
     {
         $this->authorize('create', Step::class);
 
-        return view('step.create');
+        $campaigns = Campaign::all()
+            ->filter(fn ($campaign) => Gate::allows('view', $campaign))
+            ->values();
+
+        $users = User::all();
+        return view('step.create', compact('campaigns', 'users'));
     }
 
     /**
@@ -43,23 +60,25 @@ class StepController extends Controller
      */
     public function store(Request $request)
     {
-        $this->authorize('create', Step::class);
+        $this->authorize('create', Step::class) ;
 
-        $validated = $request->validate([
+        $validated  = $request->validate([
             'name' => ['required','string'],
-            'description' => ['string'],
+            'description' => ['nullable','string','max:65535'],
             'campaign_id' => ['required','exists:campaigns,id'],
-            'user_id' => ['required','exists:users,id']
+            'user_id' => ['required','exists:users,id'],
         ]);
 
         $maxOrder = Step::where('campaign_id', $validated['campaign_id'])
             ->max('order');
 
-        $validated['order'] = $maxOrder ? $maxOrder + 1 : 0;
+        $validated['order'] = ($maxOrder != null) ? $maxOrder + 1 : 1;
 
         Step::create($validated);
 
-        return redirect('/steps')->with('success', 'Step created!');
+        $campaign = Campaign::find($validated ['campaign_id']);
+        return redirect()
+            ->route('campaigns.show', $campaign);
     }
 
     /**
@@ -78,8 +97,8 @@ class StepController extends Controller
     public function edit(Step $step)
     {
         $this->authorize('update', $step);
-
-        return view('step.edit', compact('step'));
+        $users = User::all();
+        return view('step.edit', compact('step', 'users'));
     }
 
     /**
@@ -91,14 +110,15 @@ class StepController extends Controller
 
         $validated = $request->validate([
             'name' => ['required','string'],
-            'description' => ['string'],
+            'description' => ['nullable','string','max:65535'],
             'campaign_id' => ['required','exists:campaigns,id'],
             'user_id' => ['required','exists:users,id'],
         ]);
 
         $step->update($validated);
 
-        return back()->with('success', 'Step updated!');
+        return redirect()
+            ->route('steps.show', $step);
     }
 
     /**
@@ -110,7 +130,7 @@ class StepController extends Controller
 
         $step->delete();
 
-        return back()->with('success', 'Step deleted!');
+        return redirect('/steps');
     }
 
     public function assignActivity(Request $request, Step $step)
@@ -128,7 +148,7 @@ class StepController extends Controller
                 ->update(['step_id' => $step->id]);
         }
 
-        return back()->with('success', 'Activities assigned!');
+        return back();
     }
 
     public function unassignActivity(Step $step, Activity $activity)
@@ -143,6 +163,6 @@ class StepController extends Controller
             'step_id' => null
         ]);
 
-        return back()->with('success', 'Activity unassigned!');
+        return back();
     }
 }

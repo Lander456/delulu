@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Campaign;
+use App\Models\User;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 
@@ -20,6 +21,13 @@ class CampaignUserController extends Controller
 
         $campaign->users()->syncWithoutDetaching($validated['users']);
 
-        return back()->with('success', 'Users assigned to campaign');
+        return back();
+    }
+
+    public function unassignUser(Campaign $campaign, User $user)
+    {
+        $campaign->users()->detach($user);
+
+        return back();
     }
 }

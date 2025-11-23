@@ -4,11 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Models\Activity;
 use App\Models\Campaign;
+use App\Models\AreaOfInterest;
+use App\Models\InformationSource;
+use App\Models\TargetDemographic;
 use App\Models\Step;
+use App\Models\Theme;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use App\Models\User;
+
 
 class CampaignController extends Controller
 {
@@ -35,7 +41,9 @@ class CampaignController extends Controller
     {
         $this->authorize('create', Campaign::class);
 
-        return view('campaign.create');
+        $themes = Theme::all();
+        $users = User::all();
+        return view('campaign.create', compact('themes', 'users'));
     }
 
     /**
@@ -47,15 +55,19 @@ class CampaignController extends Controller
 
         $campaign = $request->validate([
             'name' => ['required', 'string'],
-            'description' => ['string'],
+            'description' => ['nullable','string','max:65535'],
             'theme_id' => ['required', 'exists:themes,id'],
             'user_id' => ['required', 'exists:users,id'],
-            'current_step_id' => ['exists:steps,id'],
+            'current_step_id' => ['nullable','exists:steps,id'],
         ]);
 
         Campaign::create($campaign);
 
-        return redirect()->route('/campaigns')->with('success', 'Campaign created!');
+        $theme = Theme::find($campaign['theme_id']);
+        $areasOfInterest = AreaOfInterest::whereNotIn('id', $theme->areasOfInterest->pluck('id'))->get();
+        $targetDemographics = TargetDemographic::whereNotIn('id', $theme->targetDemographics->pluck('id'))->get();
+        $informationSources = InformationSource::whereNotIn('id', $theme->informationSources->pluck('id'))->get();
+        return redirect()->route('themes.show', compact('theme', 'areasOfInterest', 'targetDemographics', 'informationSources'));;
     }
 
     /**
@@ -65,7 +77,11 @@ class CampaignController extends Controller
     {
         $this->authorize('view', $campaign);
 
-        return view('campaign.detail', compact('campaign'));
+        $assignedUserIds = $campaign->users->pluck('id');
+
+        $users = User::whereNotIn('id', $assignedUserIds)
+            ->get();
+        return view('campaign.detail', compact('campaign', 'users'));
     }
 
     /**
@@ -75,7 +91,10 @@ class CampaignController extends Controller
     {
         $this->authorize('update', $campaign);
 
-        return view('campaign.edit', compact('campaign'));
+        $users = User::all();
+        $themes = Theme::all();
+        $steps = $campaign->steps;
+        return view('campaign.edit', compact('campaign', 'users', 'themes', 'steps'));
     }
 
     /**
@@ -87,15 +106,18 @@ class CampaignController extends Controller
 
         $validated = $request->validate([
             'name' => ['required', 'string'],
-            'description' => ['string'],
+            'description' => ['nullable','string','max:65535'],
             'theme_id' => ['required', 'exists:themes,id'],
             'user_id' => ['required', 'exists:users,id'],
             'current_step_id' => ['exists:steps,id']
         ]);
 
         $campaign->update($validated);
+        $assignedUserIds = $campaign->users->pluck('id');
 
-        return redirect('/campaigns')->with('success', 'Campaign updated!');
+        $users = User::whereNotIn('id', $assignedUserIds)
+            ->get();
+        return view('campaign.detail', compact('campaign', 'users'));
     }
 
     /**
@@ -107,6 +129,6 @@ class CampaignController extends Controller
 
         $campaign->delete();
 
-        return redirect('/campaigns')->with('success', 'Campaign deleted!');
+        return redirect('/campaigns');
     }
 }

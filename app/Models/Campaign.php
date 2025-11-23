@@ -18,6 +18,10 @@ class Campaign extends Model
     protected $fillable = [
         'name',
         'description',
+        'theme_id',
+        'user_id',
+        'current_step_id',
+        'success'
     ];
 
     public function theme(): BelongsTo
@@ -43,12 +47,24 @@ class Campaign extends Model
     }
     public function getSuccessRateAttribute(): float
     {
-        $successValues = $this->steps->pluck('success_rate');
+        return $this->success;
+    }
+
+    public function recalculateSuccessRate()
+    {
+        $successValues = $this->steps
+        ->pluck('success')
+        ->filter(fn($v) => !is_null($v)); // ignorovat jen null
 
         if ($successValues->isEmpty()) {
-            return 0;
+            $this->update(['success' => 0]);
+            return;
         }
 
-        return round($successValues->avg(), 2);
+        $avg = round($successValues->avg(), 2);
+
+        $this->update([
+            'success' => $avg
+        ]);
     }
 }

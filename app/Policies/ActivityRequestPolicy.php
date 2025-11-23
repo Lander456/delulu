@@ -44,7 +44,7 @@ class ActivityRequestPolicy
      */
     public function update(User $user, ActivityRequest $activityRequest): bool
     {
-        return false;
+        return true;
     }
 
     /**

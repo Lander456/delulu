@@ -18,8 +18,7 @@ class ActivityFactory extends Factory
     {
         return [
             'name' => fake()->unique()->lexify('Activity ???????????'),
-            'description' => fake()->text(),
-            'success' => fake()->randomFloat(3, 0, 1)
+            'description' => fake()->text()
         ];
     }
 }
