@@ -17,7 +17,7 @@
                 <!-- Right Button -->
                 @can('create', Theme::class)
                     <div class="flex flex-col  items-center w-32 text-black justify-center">
-                        <a href="{{ route('campaigns.create') }}" 
+                        <a href="{{ route('campaigns.create') }}"
                         class="flex bg-primary text-white px-4 py-2 rounded hover:bg-primary-highlight">
                             Create New
                         </a>
@@ -41,10 +41,10 @@
                     </thead>
                     <tbody>
                         @foreach($campaigns as $campaign)
-                        @can('view', arguments: $campaign)
+                        @can('view', $campaign)
                         <tr>
                             <td class="p-2 border border-background-dark">
-                                <a href="{{ route('campaigns.show', $campaign) }}" 
+                                <a href="{{ route('campaigns.show', $campaign) }}"
                                 class="font-semibold py-1 hover:underline ">
                                     {{ $campaign->name }}
                                 </a>
