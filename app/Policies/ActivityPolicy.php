@@ -63,8 +63,12 @@ class ActivityPolicy
     {
 
         $parentStep = $activity->step;
+        $parentCampaign = $parentStep->campaign;
+        $parentTheme = $parentCampaign->theme;
 
-        return $parentStep->user->id == $user->id;
+        return $parentStep->user->id == $user->id or
+            $parentCampaign->user->id == $user->id or
+            $parentTheme->user->id == $user->id;
     }
 
     /**
@@ -72,7 +76,14 @@ class ActivityPolicy
      */
     public function delete(User $user, Activity $activity): bool
     {
-        return $activity->step->user->id == $user->id;
+
+        $parentStep = $activity->step;
+        $parentCampaign = $parentStep->campaign;
+        $parentTheme = $parentCampaign->theme;
+
+        return $parentStep->user->id == $user->id or
+            $parentCampaign->user->id == $user->id or
+            $parentTheme->user->id == $user->id;
     }
 
     /**

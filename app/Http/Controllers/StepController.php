@@ -130,7 +130,7 @@ class StepController extends Controller
 
         $step->delete();
 
-        return redirect('/steps');
+        return redirect()->route('steps.index');
     }
 
     public function assignActivity(Request $request, Step $step)
