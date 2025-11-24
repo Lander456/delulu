@@ -17,12 +17,12 @@ return new class extends Migration
                 ->constrained('steps')
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
-            $table->string('name')
-                ->unique();
-            $table->string('description')
+            $table->string('name');
+            $table->text('description')
                 ->nullable();
-            $table->float('success')
-                ->nullable();
+            $table->float('success')->default(0);
+            $table->boolean('completed')
+                ->default(false);
             $table->timestamps();
         });
     }

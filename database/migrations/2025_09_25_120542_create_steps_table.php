@@ -18,12 +18,14 @@ return new class extends Migration
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
             $table->foreignId('user_id')
+                ->nullable()
                 ->constrained('users')
-                ->cascadeOnDelete()
+                ->nullOnDelete()
                 ->cascadeOnUpdate();
             $table->string('name');
-            $table->string('description')
+            $table->text('description')
                 ->nullable();
+            $table->float('success')->default(0);
             $table->timestamps();
         });
     }

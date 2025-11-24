@@ -10,6 +10,19 @@ use Illuminate\Auth\Access\Response;
 
 class CampaignPolicy
 {
+
+    /**
+     * Determine whether the user is a sysadmin, thus having privileges to do anything
+     */
+    public function before(User $user): ?bool
+    {
+        if ($user->hasRole(RolesEnum::SYSADMIN->value)) {
+            return true; // admin bypasses all checks
+        }
+
+        return null;
+    }
+
     /**
      * Determine whether the user can view any models.
      */
@@ -23,8 +36,19 @@ class CampaignPolicy
      */
     public function view(User $user, Campaign $campaign): bool
     {
-        return $campaign->user->id == $user->id or
-            $campaign->theme->user->id == $user->id;
+        if ($campaign->user_id === $user->id){
+            return true;
+        }
+
+        if ($campaign->theme && $campaign->theme->user_id === $user->id){
+            return true;
+        }
+
+        if ($campaign->users()->where('user_id', $user->id)->exists()){
+            return true;
+        }
+
+        return false;
     }
 
     /**

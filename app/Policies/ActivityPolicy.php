@@ -3,11 +3,24 @@
 namespace App\Policies;
 
 use App\Enums\PermissionsEnum;
+use App\Enums\RolesEnum;
 use App\Models\Activity;
 use App\Models\User;
 
 class ActivityPolicy
 {
+    /**
+     * Determine whether the user is a sysadmin, thus having privileges to do anything
+     */
+    public function before(User $user): ?bool
+    {
+        if ($user->hasRole(RolesEnum::SYSADMIN->value)) {
+            return true; // admin bypasses all checks
+        }
+
+        return null;
+    }
+
     /**
      * Determine whether the user can view any models.
      */
@@ -22,6 +35,11 @@ class ActivityPolicy
     public function view(User $user, Activity $activity): bool
     {
         if ($activity->users->contains($user)) {
+            return true;
+        }
+        $campaign = $activity->step->campaign;
+
+        if ($campaign->users->contains($user)) {
             return true;
         }
 
@@ -43,9 +61,14 @@ class ActivityPolicy
      */
     public function update(User $user, Activity $activity): bool
     {
-        $parentStep = $activity->step;
 
-        return $parentStep->user->id == $user->id;
+        $parentStep = $activity->step;
+        $parentCampaign = $parentStep->campaign;
+        $parentTheme = $parentCampaign->theme;
+
+        return $parentStep->user->id == $user->id or
+            $parentCampaign->user->id == $user->id or
+            $parentTheme->user->id == $user->id;
     }
 
     /**
@@ -53,7 +76,14 @@ class ActivityPolicy
      */
     public function delete(User $user, Activity $activity): bool
     {
-        return $activity->step->user->id == $user->id;
+
+        $parentStep = $activity->step;
+        $parentCampaign = $parentStep->campaign;
+        $parentTheme = $parentCampaign->theme;
+
+        return $parentStep->user->id == $user->id or
+            $parentCampaign->user->id == $user->id or
+            $parentTheme->user->id == $user->id;
     }
 
     /**

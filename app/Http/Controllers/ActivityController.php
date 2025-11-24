@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\RolesEnum;
+use Spatie\Permission\Traits\HasRoles;
 use App\Models\Activity;
 use App\Models\Theme;
 use App\Models\User;
+use App\Models\Step;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
@@ -18,13 +21,35 @@ class ActivityController extends Controller
      */
     public function index()
     {
+        if( auth()->user()->hasRole(RolesEnum::SYSADMIN->value)){
+            $activities = Activity::all();
+            $ongoingActivities = $activities->where('completed', false)->values();
+            $completedActivities = $activities->where('completed', true)->values();
+            return view('activity.index', [
+                'ongoingActivities' => $ongoingActivities,
+                'completedActivities' => $completedActivities,
+            ]);
+        }
+
         $this->authorize('viewAny', Activity::class);
 
-        $activities = Activity::with(['step.user'])->get()
-            ->filter(fn ($activity) => Gate::allows('view', $activity))
-            ->values();
+        $user = auth()->user();
 
-        return view('activity.index', compact('activities'));
+        $activities = Activity::select('activities.*')
+            ->join('steps', 'steps.id', '=', 'activities.step_id')
+            ->join('campaigns', 'campaigns.id', '=', 'steps.campaign_id')
+            ->join('campaign_user', 'campaign_user.campaign_id', '=', 'campaigns.id')
+            ->where('campaign_user.user_id', $user->id)
+            ->with(['step.campaign', 'step.user'])
+            ->get();
+
+        $ongoingActivities = $activities->where('completed', false)->values();
+        $completedActivities = $activities->where('completed', true)->values();
+
+        return view('activity.index', [
+            'ongoingActivities' => $ongoingActivities,
+            'completedActivities' => $completedActivities,
+        ]);
     }
 
     /**
@@ -33,8 +58,11 @@ class ActivityController extends Controller
     public function create()
     {
         $this->authorize('create', Activity::class);
+        $steps = Step::all()
+            ->filter(fn ($step) => Gate::allows('view', $step))
+            ->values();
 
-        return view('activity.create');
+        return view('activity.create', compact('steps'));
     }
 
     /**
@@ -45,8 +73,8 @@ class ActivityController extends Controller
         $this->authorize('create', Activity::class);
 
         $validated = $request->validate([
-            'name' => ['required','string','unique:activities,name'],
-            'description' => ['nullable','string'],
+            'name' => ['required','string'],
+            'description' => ['nullable','string','max:65535'],
             'step' => ['required','integer','exists:steps,id'],
         ]);
 
@@ -54,13 +82,12 @@ class ActivityController extends Controller
             'name' => $validated['name'],
             'description' => $validated['description'],
         ]);
-
-        $activity->step()->associate($validated['step']);
+        $step = $validated['step'];
+        $activity->step()->associate($step);
         $activity->save();
 
-        $users = User::all();
-
-        return view('activity.detail', compact('activity', 'users'))->with('success', 'Activity created!');
+        return redirect()
+            ->route('steps.show', $step);
     }
 
     /**
@@ -72,7 +99,10 @@ class ActivityController extends Controller
 
         $assignedUserIds = $activity->users->pluck('id');
 
-        $users = User::whereNotIn('id', $assignedUserIds)->get();
+        $campaignUserIds = $activity->step->campaign->users->pluck('id');
+        $users = User::whereIn('id', $campaignUserIds)
+            ->whereNotIn('id', $assignedUserIds)
+            ->get();
 
         return view('activity.detail', compact('activity', 'users'));
     }
@@ -105,7 +135,7 @@ class ActivityController extends Controller
 
         if ($request->has('name')){
             $validated = $request->validate([
-                'name' => ['required','string','unique:activities,name'],
+                'name' => ['required','string'],
             ]);
 
             $activity->update(['name' => $validated['name']]);
@@ -128,8 +158,15 @@ class ActivityController extends Controller
         }
 
         $activity->save();
-        $users = User::all();
-        return view('activity.detail', compact('activity', 'users'))->with('success', 'Activity updated!');
+
+        $assignedUserIds = $activity->users->pluck('id');
+
+        $campaignUserIds = $activity->step->campaign->users->pluck('id');
+        $users = User::whereIn('id', $campaignUserIds)
+            ->whereNotIn('id', $assignedUserIds)
+            ->get();
+
+        return view('activity.detail', compact('activity', 'users'));
     }
 
     /**
@@ -139,9 +176,15 @@ class ActivityController extends Controller
     {
         $this->authorize('delete', $activity);
 
+        $parentStep = $activity->step;
+        $parentCampaign = $parentStep->campaign;
+
         $activity->delete();
 
-        return redirect()->back()->with('success', 'Activity deleted!');
+        $parentStep->recalculateSuccessRate();
+        $parentCampaign->recalculateSuccessRate();
+
+        return redirect()->route('activities.index');
     }
 
     public function assignUsers(Request $request, Activity $activity)
@@ -153,16 +196,50 @@ class ActivityController extends Controller
             'users.*' => ['exists:users,id'],
         ]);
 
-        $activity->users()->sync(array_merge($validated['users'], $activity->users()->pluck('id')->toArray()));
+        $existingUserIds = $activity->users()->pluck('users.id')->all();
+
+        $activity->users()->sync(array_unique(array_merge($existingUserIds, $validated['users'])));
+
+
         $activity->save();
 
-        return redirect()->back()->with('success', 'Users assigned to activity!');
+        return back();
     }
 
     public function unassignUser(Activity $activity, User $user)
     {
         $activity->users()->detach($user);
 
-        return redirect()->back()->with('success', 'User unassigned from activity!');
+        return back();
+    }
+
+    public function mark(Request $request, Activity $activity)
+    {
+        $request->validate([
+            'completed' => ['required','boolean']
+        ]);
+
+        $activity->users()->updateExistingPivot(auth()->id(), ['completed' => $request->completed]);
+
+        $activity->recalculateSuccessRate();
+        $activity->step->recalculateSuccessRate();
+        $activity->step->campaign->recalculateSuccessRate();
+
+        return back();
+    }
+
+    public function complete(Request $request, Activity $activity)
+    {
+        $this->authorize('update', $activity);
+
+        $request->validate([
+            'completed' => ['required','boolean']
+        ]);
+
+        $activity->update([
+            'completed' => $request->boolean('completed')
+        ]);
+
+        return back();
     }
 }

@@ -2,33 +2,54 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AreaOfInterest;
+use App\Models\TargetDemographic;
 use App\Models\User;
+use App\Enums\RolesEnum;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
+
 
 class UserController extends Controller
 {
+    use AuthorizesRequests;
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        $this->authorize('viewAny', User::class);
+
+        $users = User::all();
+
+        return view('users.index', compact('users'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        //
+        $this->authorize('create', User::class);
+
+        $validated = $request->validate([
+            'username' => ['required', 'string', 'max:255', 'unique:users'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ]);
+
+        $user = new User([
+            'username' => $validated['username'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
+        ]);
+
+        $user->save();
+
+        return back()->with('success', 'User created!');
     }
 
     /**
@@ -36,7 +57,9 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        //
+        $this->authorize('view', $user);
+
+        return view('users.detail', compact('user'));
     }
 
     /**
@@ -44,7 +67,9 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        //
+        $this->authorize('update', $user);
+
+        return view('users.edit', compact('user'));
     }
 
     /**
@@ -52,7 +77,18 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        //
+        $this->authorize('update', $user);
+        if (!$request->filled('password')) {
+            $request->request->remove('password');
+        }
+        $validated = $request->validate([
+            'username' => ['sometimes', 'string', 'max:255', Rule::unique('users')->ignore($user->id)],
+            'email' => ['sometimes', 'string', 'max:255','email', Rule::unique('users')->ignore($user->id)],
+            'password' => ['sometimes', 'string', 'min:8', 'confirmed'],
+        ]);
+        $user->update($validated);
+
+        return view('users.detail', compact('user'));
     }
 
     /**
@@ -60,6 +96,74 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        //
+        $this->authorize('delete', $user);
+
+        $user->delete();
+
+        return redirect()->route('users.index');
     }
+
+    public function assignTargetDemographics(Request $request, User $user)
+    {
+        $this->authorize('update', $user);
+
+        $validated = $request->validate([
+            'targetDemographics' => ['required','array'],
+            'targetDemographics.*' => ['exists:target_demographics,id'],
+        ]);
+
+        $existingTargetDemoIds = $user->targetDemographics()->pluck('target_demographics.id')->all();
+
+        $user->targetDemographics()->sync(array_unique(array_merge($existingTargetDemoIds, $validated['targetDemographics'])));
+
+        $user->save();
+
+        return back();
+    }
+
+    public function unassignTargetDemographic(User $user, TargetDemographic $targetDemographic)
+    {
+        $this->authorize('update', $user);
+
+        $user->targetDemographics()->detach($targetDemographic);
+
+        return back();
+    }
+
+    public function assignAreasOfInterest(Request $request, User $user)
+    {
+        $this->authorize('update', $user);
+
+        $validated = $request->validate([
+            'areasOfInterest' => ['required','array'],
+            'areasOfInterest.*' => ['exists:area_of_interests,id'],
+        ]);
+
+        $existingAreaOfInterestIds = $user->areasOfInterest()->pluck('area_of_interests.id')->all();
+        $user->areasOfInterest()->sync(array_unique(array_merge($existingAreaOfInterestIds, $validated['areasOfInterest'])));
+
+        $user->save();
+
+        return back();
+    }
+
+    public function unassignAreaOfInterest(User $user, AreaOfInterest $areaOfInterest)
+    {
+        $this->authorize('update', $user);
+
+        $user->areasOfInterest()->detach($areaOfInterest);
+
+        return back();
+    }
+
+    public function assignRole(Request $request, User $user)
+{
+    $this->authorize('update', $user);
+
+    $role = RolesEnum::from($request->role);
+
+    $user->syncRoles([$role->value]);
+
+    return back();
+}
 }

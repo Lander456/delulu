@@ -39,6 +39,7 @@ class RolesSeeder extends Seeder
 
                     $createdRole->givePermissionTo(PermissionsEnum::getCampaignsPerms());
                     $createdRole->givePermissionTo(PermissionsEnum::getActivitiesPerms());
+                    $createdRole->givePermissionTo(PermissionsEnum::getStepsPerms());
                     $createdRole->givePermissionTo([
                         PermissionsEnum::ASSIGN_COORDINATORS->value,
                         PermissionsEnum::CREATE_STEPS->value,
@@ -53,6 +54,7 @@ class RolesSeeder extends Seeder
                         PermissionsEnum::ASSIGN_WORKERS->value,
                         PermissionsEnum::APPROVE_WORKERS->value,
                         PermissionsEnum::VIEW_ASSIGNED_WORKERS->value,
+                        PermissionsEnum::VIEW_STEPS->value,
                     ]);
                     break;
 

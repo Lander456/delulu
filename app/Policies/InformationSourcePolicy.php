@@ -12,6 +12,18 @@ use Spatie\Permission\Models\Permission;
 class InformationSourcePolicy
 {
     /**
+     * Determine whether the user is a sysadmin, thus having privileges to do anything
+     */
+    public function before(User $user): ?bool
+    {
+        if ($user->hasRole(RolesEnum::SYSADMIN->value)) {
+            return true; // admin bypasses all checks
+        }
+
+        return null;
+    }
+
+    /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool

@@ -5,10 +5,23 @@ namespace App\Policies;
 use App\Enums\PermissionsEnum;
 use App\Models\Theme;
 use App\Models\User;
+use App\Enums\RolesEnum;
 use Illuminate\Auth\Access\Response;
 
 class ThemePolicy
 {
+    /**
+     * Determine whether the user is a sysadmin, thus having privileges to do anything
+     */
+    public function before(User $user) : ?bool
+    {
+        if ($user->hasRole(RolesEnum::SYSADMIN->value)) {
+            return true;
+        }
+
+        return null;
+    }
+
     /**
      * Determine whether the user can view any models.
      */

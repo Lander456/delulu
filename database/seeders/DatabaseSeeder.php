@@ -26,7 +26,8 @@ class DatabaseSeeder extends Seeder
             AreasOfInterestSeeder::class,
             InformationSourcesSeeder::class,
             TargetDemographicsSeeder::class,
-
+            CampaignUserSeeder::class,
+            ActivityRequestSeeder::class
         ]);
     }
 }

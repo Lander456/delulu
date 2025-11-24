@@ -11,6 +11,18 @@ use Illuminate\Auth\Access\Response;
 class StepPolicy
 {
     /**
+     * Determine whether the user is a sysadmin, thus having privileges to do anything
+     */
+    public function before(User $user): ?bool
+    {
+        if ($user->hasRole(RolesEnum::SYSADMIN->value)) {
+            return true; // admin bypasses all checks
+        }
+
+        return null;
+    }
+
+    /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
@@ -23,9 +35,24 @@ class StepPolicy
      */
     public function view(User $user, Step $step): bool
     {
-        return $step->user->id == $user->id or
-            $step->campaign->user->id == $user->id or
-            $step->campaign->theme->user->id == $user->id;
+        if ($step->user_id === $user->id) {
+            return true;
+        }
+
+        if ($step->campaign && $step->campaign->user_id === $user->id) {
+            return true;
+        }
+        if ($step->activities()->whereHas('users', function ($q) use ($user) {
+            $q->where('users.id', $user->id);
+        })->exists()) {
+            return true; 
+        }
+
+        if ($step->campaign && $step->campaign->theme && $step->campaign->theme->user_id === $user->id) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
