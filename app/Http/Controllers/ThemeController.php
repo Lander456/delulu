@@ -58,7 +58,7 @@ class ThemeController extends Controller
 
         Theme::create($theme);
 
-        return redirect('/themes');
+        return redirect()->route('themes.index');
     }
 
     /**
@@ -71,7 +71,7 @@ class ThemeController extends Controller
         $areasOfInterest = AreaOfInterest::whereNotIn('id', $theme->areasOfInterest->pluck('id'))->get();
         $targetDemographics = TargetDemographic::whereNotIn('id', $theme->targetDemographics->pluck('id'))->get();
         $informationSources = InformationSource::whereNotIn('id', $theme->informationSources->pluck('id'))->get();
-        return view('theme.detail', 
+        return view('theme.detail',
         compact('theme', 'areasOfInterest', 'targetDemographics', 'informationSources'));
     }
 
@@ -137,7 +137,7 @@ class ThemeController extends Controller
 
         $theme->save();
 
-        return back()->with('success', 'Target demographics assigned to theme!');
+        return back();
     }
 
     public function unassignTargetDemographic(Theme $theme, TargetDemographic $targetDemographic)
@@ -160,7 +160,7 @@ class ThemeController extends Controller
 
         $existingAreaOfInterestIds = $theme->areasOfInterest()->pluck('area_of_interests.id')->all();
         $theme->areasOfInterest()->sync(array_unique(array_merge($existingAreaOfInterestIds, $validated['areasOfInterest'])));
-        
+
         $theme->save();
 
         return back();

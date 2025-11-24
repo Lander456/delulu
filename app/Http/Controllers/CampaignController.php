@@ -67,7 +67,7 @@ class CampaignController extends Controller
         $areasOfInterest = AreaOfInterest::whereNotIn('id', $theme->areasOfInterest->pluck('id'))->get();
         $targetDemographics = TargetDemographic::whereNotIn('id', $theme->targetDemographics->pluck('id'))->get();
         $informationSources = InformationSource::whereNotIn('id', $theme->informationSources->pluck('id'))->get();
-        return redirect()->route('themes.show', compact('theme', 'areasOfInterest', 'targetDemographics', 'informationSources'));;
+        return redirect()->route('themes.show', compact('theme', 'areasOfInterest', 'targetDemographics', 'informationSources'));
     }
 
     /**
@@ -129,6 +129,6 @@ class CampaignController extends Controller
 
         $campaign->delete();
 
-        return redirect('/campaigns');
+        return redirect()->route('campaigns.index');
     }
 }

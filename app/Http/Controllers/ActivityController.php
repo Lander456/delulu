@@ -176,7 +176,13 @@ class ActivityController extends Controller
     {
         $this->authorize('delete', $activity);
 
+        $parentStep = $activity->step;
+        $parentCampaign = $parentStep->campaign;
+
         $activity->delete();
+
+        $parentStep->recalculateSuccessRate();
+        $parentCampaign->recalculateSuccessRate();
 
         return redirect()->route('activities.index');
     }
